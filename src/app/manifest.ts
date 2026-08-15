@@ -1,0 +1,35 @@
+import type { MetadataRoute } from "next";
+import { APP_DESCRIPTION, APP_NAME } from "@/config/app";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: APP_NAME,
+    short_name: "Tx Explainer",
+    description: APP_DESCRIPTION,
+    start_url: "/",
+    display: "standalone",
+    background_color: "#f7f7f5",
+    theme_color: "#0f766e",
+    lang: "en",
+    icons: [
+      {
+        src: "/favicon.svg",
+        type: "image/svg+xml",
+        sizes: "any",
+        purpose: "any",
+      },
+      {
+        src: "/icon",
+        type: "image/png",
+        sizes: "32x32",
+        purpose: "any",
+      },
+      {
+        src: "/apple-icon",
+        type: "image/png",
+        sizes: "180x180",
+        purpose: "any",
+      },
+    ],
+  };
+}
