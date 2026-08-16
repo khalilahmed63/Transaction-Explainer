@@ -105,6 +105,7 @@ export default async function TransactionPage({ params }: PageProps) {
   if (!isValidTxHash(hashParam)) {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
+        <TransactionSearch defaultChain={chain} clearHref="/" />
         <TransactionError
           title="Invalid transaction hash"
           message="That doesn't look like a valid transaction hash."
@@ -115,7 +116,6 @@ export default async function TransactionPage({ params }: PageProps) {
             "they contain only hexadecimal characters",
           ]}
         />
-        <TransactionSearch defaultChain={chain} />
       </div>
     );
   }
@@ -126,15 +126,11 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.ok) {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
-        <div>
-          <h2 className="mb-4 text-sm font-semibold text-foreground">
-            Explain another transaction
-          </h2>
-          <TransactionSearch
-            defaultChain={chain}
-            defaultHash={result.data.hash}
-          />
-        </div>
+        <TransactionSearch
+          defaultChain={chain}
+          defaultHash={result.data.hash}
+          clearHref="/"
+        />
         <div className="border-t border-border pt-10">
           <TransactionResult tx={result.data} />
         </div>
@@ -145,12 +141,11 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.kind === "not_found") {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
-        <div>
-          <h2 className="mb-4 text-sm font-semibold text-foreground">
-            Explain another transaction
-          </h2>
-          <TransactionSearch defaultChain={chain} defaultHash={hash} />
-        </div>
+        <TransactionSearch
+          defaultChain={chain}
+          defaultHash={hash}
+          clearHref="/"
+        />
         <TransactionError
           title="Transaction not found"
           message={result.message}
@@ -175,6 +170,11 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.kind === "rpc") {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
+        <TransactionSearch
+          defaultChain={chain}
+          defaultHash={hash}
+          clearHref="/"
+        />
         <TransactionError
           title="Couldn't reach the network"
           message={result.message}
@@ -185,13 +185,13 @@ export default async function TransactionPage({ params }: PageProps) {
             "a brief connectivity issue",
           ]}
         />
-        <TransactionSearch defaultChain={chain} defaultHash={hash} />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
+      <TransactionSearch defaultChain={chain} clearHref="/" />
       <TransactionError
         title="Something went wrong"
         message={result.message}

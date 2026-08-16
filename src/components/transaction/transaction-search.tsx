@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardPaste, LoaderCircle, Sparkles } from "lucide-react";
+import { ClipboardPaste, LoaderCircle, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   ClipboardEvent,
@@ -22,12 +22,15 @@ type TransactionSearchProps = {
   defaultChain?: SupportedChain;
   defaultHash?: string;
   className?: string;
+  /** When provided, Clear leaves the result page and restores the normal home UI. */
+  clearHref?: string;
 };
 
 export function TransactionSearch({
   defaultChain = "ethereum",
   defaultHash = "",
   className,
+  clearHref,
 }: TransactionSearchProps) {
   const router = useRouter();
   const [chain, setChain] = useState<SupportedChain>(defaultChain);
@@ -35,9 +38,12 @@ export function TransactionSearch({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const lastSubmittedRef = useRef<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const validationError = getHashValidationError(hash);
   const canSubmit = isValidTxHash(hash) && !isPending;
+  const canClearResults = Boolean(clearHref) && !isPending;
+  const showFieldClear = !clearHref && hash.length > 0 && !isPending;
 
   function submit(rawHash: string = hash, nextChain: SupportedChain = chain) {
     if (!isValidTxHash(rawHash)) {
@@ -94,93 +100,158 @@ export function TransactionSearch({
     }
   }
 
-  return (
-    <form onSubmit={onSubmit} className={cn("w-full", className)} noValidate>
-      <div className="rounded-2xl border border-border bg-surface p-2 shadow-sm shadow-black/[0.03] sm:p-2.5">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-          <NetworkSelector
-            value={chain}
-            onChange={setChain}
-            disabled={isPending}
-          />
+  function onClearField() {
+    setHash("");
+    setError(null);
+    lastSubmittedRef.current = null;
+    inputRef.current?.focus();
+  }
 
-          <div className="relative min-w-0 flex-1">
-            <label htmlFor="tx-hash" className="sr-only">
-              Transaction hash
-            </label>
-            <input
-              id="tx-hash"
-              name="hash"
-              type="text"
-              spellCheck={false}
-              autoComplete="off"
-              autoCorrect="off"
-              placeholder="Paste transaction hash — 0x..."
-              value={hash}
+  function onClearResults() {
+    if (!clearHref) return;
+    setHash("");
+    setError(null);
+    lastSubmittedRef.current = null;
+    startTransition(() => {
+      router.push(clearHref);
+    });
+  }
+
+  function onChainChange(nextChain: SupportedChain) {
+    if (nextChain === chain) return;
+    setChain(nextChain);
+    if (isValidTxHash(hash)) {
+      submit(hash, nextChain);
+    }
+  }
+
+  return (
+    <div className={cn("w-full", className)}>
+      {canClearResults && (
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-foreground">
+            Explain another transaction
+          </p>
+          <button
+            type="button"
+            onClick={onClearResults}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            aria-label="Clear results and return home"
+          >
+            <X className="size-3.5" aria-hidden />
+            Clear
+          </button>
+        </div>
+      )}
+
+      <form onSubmit={onSubmit} noValidate>
+        <div className="rounded-2xl border border-border bg-surface p-2 shadow-sm shadow-black/3 sm:p-2.5">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+            <NetworkSelector
+              value={chain}
+              onChange={onChainChange}
               disabled={isPending}
-              onPaste={onHashPaste}
-              onChange={(e) => {
-                setHash(e.target.value);
-                setError(null);
-              }}
-              className={cn(
-                "h-12 w-full rounded-xl border bg-background px-4 pr-12 font-mono text-sm text-foreground placeholder:font-sans placeholder:text-muted",
-                "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
-                "disabled:cursor-not-allowed disabled:opacity-60",
-                error || (hash && validationError)
-                  ? "border-danger/50"
-                  : "border-transparent sm:border-border/60",
-              )}
-              aria-invalid={Boolean(error || (hash && validationError))}
-              aria-describedby={
-                error || (hash && validationError) ? "tx-hash-error" : undefined
-              }
             />
-            <button
-              type="button"
-              onClick={onPaste}
-              disabled={isPending}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
-              aria-label="Paste from clipboard"
-            >
-              <ClipboardPaste className="size-4" />
-            </button>
+
+            <div className="relative min-w-0 flex-1">
+              <label htmlFor="tx-hash" className="sr-only">
+                Transaction hash
+              </label>
+              <input
+                ref={inputRef}
+                id="tx-hash"
+                name="hash"
+                type="text"
+                spellCheck={false}
+                autoComplete="off"
+                autoCorrect="off"
+                placeholder="Paste transaction hash — 0x..."
+                value={hash}
+                disabled={isPending}
+                onPaste={onHashPaste}
+                onChange={(e) => {
+                  setHash(e.target.value);
+                  setError(null);
+                }}
+                className={cn(
+                  "h-12 w-full rounded-xl border bg-background px-4 font-mono text-sm text-foreground placeholder:font-sans placeholder:text-muted",
+                  "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
+                  "disabled:cursor-not-allowed disabled:opacity-60",
+                  showFieldClear ? "pr-20" : "pr-12",
+                  error || (hash && validationError)
+                    ? "border-danger/50"
+                    : "border-transparent sm:border-border/60",
+                )}
+                aria-invalid={Boolean(error || (hash && validationError))}
+                aria-describedby={
+                  error || (hash && validationError)
+                    ? "tx-hash-error"
+                    : undefined
+                }
+              />
+              <div className="absolute right-1.5 top-1/2 flex -translate-y-1/2 items-center gap-0.5">
+                {showFieldClear && (
+                  <button
+                    type="button"
+                    onClick={onClearField}
+                    className="rounded-lg p-2 text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                    aria-label="Clear transaction hash"
+                  >
+                    <X className="size-4" />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={onPaste}
+                  disabled={isPending}
+                  className="rounded-lg p-2 text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
+                  aria-label="Paste from clipboard"
+                >
+                  <ClipboardPaste className="size-4" />
+                </button>
+              </div>
+            </div>
           </div>
+
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className={cn(
+              "mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-semibold text-accent-foreground transition-all",
+              "hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              "disabled:cursor-not-allowed disabled:opacity-50",
+              isPending && "cursor-wait",
+            )}
+          >
+            {isPending ? (
+              <>
+                <LoaderCircle className="size-4 animate-spin" aria-hidden />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Sparkles className="size-4 opacity-90" aria-hidden />
+                Explain Transaction
+              </>
+            )}
+          </button>
         </div>
 
-        <button
-          type="submit"
-          disabled={!canSubmit}
-          className={cn(
-            "mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-semibold text-accent-foreground transition-all",
-            "hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-            "disabled:cursor-not-allowed disabled:opacity-50",
-            isPending && "cursor-wait",
-          )}
-        >
-          {isPending ? (
-            <>
-              <LoaderCircle className="size-4 animate-spin" aria-hidden />
-              Analyzing...
-            </>
-          ) : (
-            <>
-              <Sparkles className="size-4 opacity-90" aria-hidden />
-              Explain Transaction
-            </>
-          )}
-        </button>
-      </div>
-
-      <p className="mt-2 px-1 text-xs text-muted">
-        Paste a valid hash to explain automatically — or press the button.
-      </p>
-
-      {(error || (hash && validationError)) && (
-        <p id="tx-hash-error" className="mt-2 px-1 text-sm text-danger" role="alert">
-          {error || validationError}
+        <p className="mt-2 px-1 text-xs text-muted">
+          Paste a valid hash to explain automatically. Changing the network
+          reloads the same hash on that chain.
         </p>
-      )}
-    </form>
+
+        {(error || (hash && validationError)) && (
+          <p
+            id="tx-hash-error"
+            className="mt-2 px-1 text-sm text-danger"
+            role="alert"
+          >
+            {error || validationError}
+          </p>
+        )}
+      </form>
+    </div>
   );
 }
