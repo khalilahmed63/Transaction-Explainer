@@ -24,6 +24,10 @@ This is **not** a wallet, portfolio tracker, blockchain explorer, security scann
 - Shareable result URLs (`/tx/ethereum/[hash]`, `/tx/base/[hash]`)
 - Light and dark mode
 
+## Analytics
+
+The app includes [Vercel Web Analytics](https://vercel.com/docs/analytics) and [Speed Insights](https://vercel.com/docs/speed-insights). After deploying to Vercel, enable both in the project dashboard under **Analytics** and **Speed Insights** so data appears for production traffic.
+
 ## Local Development
 
 ```bash
