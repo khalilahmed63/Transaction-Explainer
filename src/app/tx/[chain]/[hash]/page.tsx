@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import type { Hash } from "viem";
 import { TransactionResult } from "@/components/transaction/transaction-result";
 import { TransactionError } from "@/components/transaction/transaction-error";
 import { TransactionSearch } from "@/components/transaction/transaction-search";
+import { TransactionAnalytics } from "@/components/transaction/transaction-analytics";
 import {
   explainTransaction,
   RpcRequestError,
   TransactionNotFoundError,
 } from "@/lib/blockchain/fetch-transaction";
+import { findAlternateChain } from "@/lib/blockchain/resolve-chain";
 import { getChainConfig } from "@/lib/blockchain/chains";
+import { APP_NAME } from "@/config/app";
+import { plainSummary } from "@/lib/og/transaction-card";
 import {
   isSupportedChain,
   isValidTxHash,
   normalizeHash,
 } from "@/lib/validation/transaction";
 import type { SupportedChain, TransactionExplanation } from "@/types/transaction";
+import type { TransactionErrorType } from "@/lib/analytics";
 
 type PageProps = {
   params: Promise<{ chain: string; hash: string }>;
@@ -28,20 +34,71 @@ type LoadResult =
       message: string;
     };
 
+function errorTypeFromKind(
+  kind: "not_found" | "rpc" | "unconfigured" | "internal",
+): TransactionErrorType {
+  switch (kind) {
+    case "not_found":
+      return "not_found";
+    case "rpc":
+    case "unconfigured":
+      return "rpc_error";
+    case "internal":
+      return "internal_error";
+    default:
+      return "unknown";
+  }
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { chain } = await params;
+  const { chain, hash } = await params;
   const chainName = isSupportedChain(chain)
     ? getChainConfig(chain).name
     : "Crypto";
 
+  const canonicalPath =
+    isSupportedChain(chain) && isValidTxHash(hash)
+      ? `/tx/${chain}/${normalizeHash(hash)}`
+      : undefined;
+
+  let description = `Plain-English explanation of a ${chainName} transaction.`;
+
+  if (isSupportedChain(chain) && isValidTxHash(hash)) {
+    try {
+      const data = await explainTransaction(
+        chain,
+        normalizeHash(hash) as Hash,
+      );
+      description = plainSummary(data.summary);
+    } catch {
+      // Keep generic description on failure.
+    }
+  }
+
   return {
     title: `${chainName} Transaction Explained`,
-    description: `Plain-English explanation of a ${chainName} transaction.`,
+    description,
     robots: {
       index: false,
       follow: true,
+    },
+    alternates: canonicalPath
+      ? {
+          canonical: canonicalPath,
+        }
+      : undefined,
+    openGraph: {
+      title: `${chainName} Transaction Explained | ${APP_NAME}`,
+      description,
+      type: "website",
+      ...(canonicalPath ? { url: canonicalPath } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${chainName} Transaction Explained`,
+      description,
     },
   };
 }
@@ -105,6 +162,12 @@ export default async function TransactionPage({ params }: PageProps) {
   if (!isValidTxHash(hashParam)) {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
+        <TransactionAnalytics
+          chain={chain}
+          outcome="error"
+          errorType="invalid_transaction"
+          submitted={false}
+        />
         <TransactionSearch defaultChain={chain} clearHref="/" />
         <TransactionError
           title="Invalid transaction hash"
@@ -126,6 +189,11 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.ok) {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
+        <TransactionAnalytics
+          chain={chain}
+          outcome="success"
+          transactionType={result.data.transactionType}
+        />
         <TransactionSearch
           defaultChain={chain}
           defaultHash={result.data.hash}
@@ -139,8 +207,19 @@ export default async function TransactionPage({ params }: PageProps) {
   }
 
   if (result.kind === "not_found") {
+    // Common case: pasted a Base hash while Ethereum is selected (or vice versa).
+    const alternate = await findAlternateChain(chain, hash);
+    if (alternate) {
+      redirect(`/tx/${alternate}/${hash}`);
+    }
+
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
+        <TransactionAnalytics
+          chain={chain}
+          outcome="error"
+          errorType={errorTypeFromKind(result.kind)}
+        />
         <TransactionSearch
           defaultChain={chain}
           defaultHash={hash}
@@ -150,6 +229,7 @@ export default async function TransactionPage({ params }: PageProps) {
           title="Transaction not found"
           message={result.message}
           chain={chain}
+          hash={hash}
         />
       </div>
     );
@@ -158,6 +238,11 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.kind === "unconfigured") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+        <TransactionAnalytics
+          chain={chain}
+          outcome="error"
+          errorType={errorTypeFromKind(result.kind)}
+        />
         <TransactionError
           title="Service unavailable"
           message={result.message}
@@ -170,6 +255,11 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.kind === "rpc") {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
+        <TransactionAnalytics
+          chain={chain}
+          outcome="error"
+          errorType={errorTypeFromKind(result.kind)}
+        />
         <TransactionSearch
           defaultChain={chain}
           defaultHash={hash}
@@ -191,6 +281,11 @@ export default async function TransactionPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
+      <TransactionAnalytics
+        chain={chain}
+        outcome="error"
+        errorType={errorTypeFromKind(result.kind)}
+      />
       <TransactionSearch defaultChain={chain} clearHref="/" />
       <TransactionError
         title="Something went wrong"

@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
+  APP_CONFIG,
   APP_DESCRIPTION,
   APP_KEYWORDS,
   APP_NAME,
@@ -36,15 +37,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(APP_CONFIG.url),
   title: {
     default: `${APP_NAME} — Understand Crypto Transactions in Plain English`,
     template: `%s | ${APP_NAME}`,
   },
   description: APP_DESCRIPTION,
   applicationName: APP_NAME,
-  authors: [{ name: APP_NAME }],
-  creator: APP_NAME,
+  authors: [{ name: APP_CONFIG.creator.name, url: APP_CONFIG.creator.url }],
+  creator: APP_CONFIG.creator.name,
   publisher: APP_NAME,
   category: "finance",
   keywords: [...APP_KEYWORDS],

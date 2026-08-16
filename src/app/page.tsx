@@ -4,19 +4,17 @@ import {
   CircleHelp,
   Fuel,
   Gift,
-  Layers2,
   Send,
   ShieldCheck,
   Wallet,
 } from "lucide-react";
 import { TransactionSearch } from "@/components/transaction/transaction-search";
-import { EmptyState } from "@/components/transaction/empty-state";
 import { ChainIcon } from "@/components/ui/chain-icon";
 import {
+  APP_ABOUT,
+  APP_CAPABILITIES,
   APP_DESCRIPTION,
   APP_FAQ,
-  APP_FEATURES,
-  APP_LONG_DESCRIPTION,
   APP_NAME,
   DISCLAIMER,
 } from "@/config/app";
@@ -30,12 +28,11 @@ export const metadata: Metadata = {
 };
 
 const CAPABILITY_ICONS = {
-  summary: Layers2,
-  transfers: ArrowLeftRight,
+  transfers: Send,
+  swaps: ArrowLeftRight,
   approvals: ShieldCheck,
-  "wallet-impact": Wallet,
   gas: Fuel,
-  shareable: Send,
+  "wallet-impact": Wallet,
 } as const;
 
 export default function HomePage() {
@@ -54,8 +51,7 @@ export default function HomePage() {
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
           Paste an Ethereum or Base transaction hash and see what actually
-          happened in plain English — transfers, swaps, approvals, wallet
-          impact, and gas fees.
+          happened in plain English.
         </p>
       </section>
 
@@ -65,7 +61,6 @@ export default function HomePage() {
         aria-label="Explain a transaction"
       >
         <TransactionSearch />
-        <EmptyState />
       </section>
 
       <section
@@ -79,16 +74,12 @@ export default function HomePage() {
             id="features-heading"
             className="text-lg font-semibold tracking-tight text-foreground sm:text-xl"
           >
-            What Transaction Explainer shows
+            What you can understand
           </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted">
-            Built for people who use crypto but do not want to decode logs,
-            calldata, or explorer screens full of contract addresses.
-          </p>
         </div>
 
         <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-          {APP_FEATURES.map((feature) => {
+          {APP_CAPABILITIES.map((feature) => {
             const Icon =
               CAPABILITY_ICONS[feature.id as keyof typeof CAPABILITY_ICONS] ??
               Gift;
@@ -133,13 +124,13 @@ export default function HomePage() {
             },
             {
               step: "2",
-              title: "We read the on-chain activity",
-              body: "The app fetches the transaction and receipt, then parses token transfers, approvals, native value, and gas.",
+              title: "We analyze blockchain activity",
+              body: "The app reads the transaction and receipt, then parses transfers, approvals, native value, and gas.",
             },
             {
               step: "3",
-              title: "Get a plain-English explanation",
-              body: "See a clear summary first, with wallet impact, transfers, permissions, and technical details available underneath.",
+              title: "Understand what happened",
+              body: "Get a plain-English summary first, with wallet impact and details available underneath.",
             },
           ].map((item) => (
             <li
@@ -162,56 +153,16 @@ export default function HomePage() {
 
       <section
         id="about"
-        className="animate-rise mt-20 scroll-mt-20"
+        className="animate-rise mt-16 scroll-mt-20"
         style={{ animationDelay: "200ms" }}
         aria-labelledby="about-heading"
       >
-        <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
-          <h2
-            id="about-heading"
-            className="text-lg font-semibold tracking-tight text-foreground sm:text-xl"
-          >
-            About {APP_NAME}
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-muted sm:text-[15px]">
-            {APP_LONG_DESCRIPTION}
-          </p>
-          <p className="mt-4 text-sm leading-relaxed text-muted sm:text-[15px]">
-            Blockchain explorers are powerful, but they are designed for
-            technical users. {APP_NAME} focuses on one job: help anyone
-            understand a finished transaction quickly, then optionally dig into
-            the details.
-          </p>
-
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-border/80 bg-background/70 p-4">
-              <h3 className="text-sm font-semibold text-foreground">
-                Supported networks
-              </h3>
-              <ul className="mt-3 space-y-2 text-sm text-muted">
-                <li className="flex items-center gap-2">
-                  <ChainIcon chain="ethereum" size="sm" />
-                  Ethereum Mainnet
-                </li>
-                <li className="flex items-center gap-2">
-                  <ChainIcon chain="base" size="sm" />
-                  Base Mainnet
-                </li>
-              </ul>
-            </div>
-            <div className="rounded-xl border border-border/80 bg-background/70 p-4">
-              <h3 className="text-sm font-semibold text-foreground">
-                What we do not do
-              </h3>
-              <ul className="mt-3 list-disc space-y-1.5 pl-4 text-sm text-muted">
-                <li>No wallet connection</li>
-                <li>No transaction signing</li>
-                <li>No safety or scam scoring</li>
-                <li>No portfolio tracking</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <p id="about-heading" className="sr-only">
+          About {APP_NAME}
+        </p>
+        <p className="mx-auto max-w-2xl text-center text-sm leading-relaxed text-muted">
+          {APP_ABOUT}
+        </p>
       </section>
 
       <section

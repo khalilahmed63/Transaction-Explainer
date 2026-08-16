@@ -1,3 +1,4 @@
+import { cache } from "react";
 import {
   type Hash,
   formatEther,
@@ -31,7 +32,8 @@ export class RpcRequestError extends Error {
   }
 }
 
-export async function explainTransaction(
+/** Dedupes page + generateMetadata fetches within a single request. */
+export const explainTransaction = cache(async function explainTransaction(
   chain: SupportedChain,
   hash: Hash,
 ): Promise<TransactionExplanation> {
@@ -213,4 +215,4 @@ export async function explainTransaction(
   const summary = buildTransactionSummary(base);
 
   return { ...base, summary };
-}
+});

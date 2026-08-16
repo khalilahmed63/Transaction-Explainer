@@ -1,6 +1,15 @@
 import type { SupportedChain } from "@/types/transaction";
 
-export const APP_NAME = "Transaction Explainer";
+export const APP_CONFIG = {
+  name: "Transaction Explainer",
+  url: "https://tx.tomnitive.com",
+  creator: {
+    name: "Tomnitive",
+    url: "https://tomnitive.com",
+  },
+} as const;
+
+export const APP_NAME = APP_CONFIG.name;
 export const APP_VERSION = "0.1";
 
 export const APP_TAGLINE = "Blockchain transactions, explained simply.";
@@ -8,8 +17,8 @@ export const APP_TAGLINE = "Blockchain transactions, explained simply.";
 export const APP_DESCRIPTION =
   "Paste an Ethereum or Base transaction hash and understand what happened in plain English — including token transfers, swaps, approvals, wallet impact, and gas fees.";
 
-export const APP_LONG_DESCRIPTION =
-  "Transaction Explainer turns complex blockchain activity into clear, human-readable summaries. Instead of digging through calldata, logs, and contract addresses, paste a transaction hash and see what tokens moved, what was approved, what you sent or received, and how much network fee was paid.";
+export const APP_ABOUT =
+  "Transaction Explainer translates Ethereum and Base transaction activity into simple, readable explanations. It helps users understand token transfers, swaps, approvals, gas fees, and wallet impact without navigating raw blockchain data.";
 
 export const APP_KEYWORDS = [
   "transaction explainer",
@@ -26,75 +35,98 @@ export const APP_KEYWORDS = [
   "understand crypto transaction",
 ] as const;
 
-export const APP_FEATURES = [
-  {
-    id: "summary",
-    title: "Plain-English summaries",
-    description:
-      "Get a clear explanation of what a transaction did — transfers, swaps, claims, approvals, or contract interactions — without reading raw blockchain data.",
-  },
+/** Compact homepage capability list — one job, no repeated product pitch. */
+export const APP_CAPABILITIES = [
   {
     id: "transfers",
-    title: "Token transfers & swaps",
-    description:
-      "See which tokens moved, how much was sent or received, and whether a transaction looks like a swap based on wallet token flow.",
+    title: "Token transfers",
+    description: "See which tokens moved, how much, and where they went.",
+  },
+  {
+    id: "swaps",
+    title: "Swaps",
+    description: "Understand what you sent and what you received in a trade.",
   },
   {
     id: "approvals",
-    title: "Token permissions",
-    description:
-      "Detect ERC-20 approvals and explain which contract received spending permission, including unlimited allowances when relevant.",
+    title: "Approvals",
+    description: "Spot spending permissions granted to a contract.",
+  },
+  {
+    id: "gas",
+    title: "Gas fees",
+    description: "View the network fee paid for the transaction.",
   },
   {
     id: "wallet-impact",
     title: "Wallet impact",
-    description:
-      "Understand what left and entered the initiating wallet in one place, so the net effect of the transaction is easy to follow.",
-  },
-  {
-    id: "gas",
-    title: "Network fees",
-    description:
-      "View the actual gas fee paid for the transaction in ETH, calculated from gas used and effective gas price.",
-  },
-  {
-    id: "shareable",
-    title: "Shareable result links",
-    description:
-      "Every explanation has a shareable URL for Ethereum or Base, so you can revisit or send a transaction breakdown to someone else.",
+    description: "See what left and entered the initiating wallet.",
   },
 ] as const;
 
 export const APP_FAQ = [
   {
-    question: "What networks does Transaction Explainer support?",
+    question: "What is a transaction hash?",
     answer:
-      "Version 0.1 supports Ethereum Mainnet and Base Mainnet. Paste a completed transaction hash from either network to get an explanation.",
+      "A transaction hash is a unique ID for a completed blockchain transaction. It usually starts with 0x and is 66 characters long. You can copy it from a wallet or a block explorer.",
   },
   {
-    question: "Do I need to connect a wallet?",
+    question: "Which networks are supported?",
     answer:
-      "No. Transaction Explainer only analyzes completed on-chain transactions. There is no wallet connection, signing, or transaction simulation.",
+      "Version 0.1 supports Ethereum Mainnet and Base Mainnet.",
   },
   {
-    question: "Is this a blockchain explorer?",
+    question: "Do I need to connect my wallet?",
     answer:
-      "It is complementary to explorers like Etherscan and BaseScan. Explorers show technical details; Transaction Explainer focuses on a plain-English summary of what happened.",
+      "No. Transaction Explainer only analyzes completed on-chain transactions. There is no wallet connection or signing.",
   },
   {
-    question: "Does it tell me if a transaction is safe?",
+    question: "Does Transaction Explainer determine whether a transaction is safe?",
     answer:
-      "No. It helps you understand activity such as transfers, approvals, and fees. It does not determine whether a token, contract, or protocol is safe.",
+      "No. It helps you understand activity such as transfers, approvals, and fees. It does not score risk or detect scams.",
+  },
+  {
+    question: "What transactions can it explain?",
+    answer:
+      "Basic ETH transfers, token transfers, approvals, swaps, claims, contract interactions, gas fees, and wallet impact — based on what is visible on-chain.",
   },
 ] as const;
 
 export const SUPPORTED_CHAINS: SupportedChain[] = ["ethereum", "base"];
 
-export const EXAMPLE_TRANSACTIONS: Partial<
-  Record<SupportedChain, { hash: string; label: string }>
-> = {
-  // Leave empty by default — configure real hashes in env or here when available.
+export type ExampleTransaction = {
+  hash: string;
+  label: string;
 };
+
+/**
+ * Central example hashes for the homepage "Try an example" action.
+ * Override via env without code changes. Empty hash = CTA hidden for that chain.
+ */
+export const EXAMPLE_TRANSACTIONS: Partial<
+  Record<SupportedChain, ExampleTransaction>
+> = {
+  ethereum: {
+    hash:
+      process.env.NEXT_PUBLIC_EXAMPLE_ETHEREUM_TX ??
+      "0xd5a4dab2691e1e6374173a17597184245d2d0296804475ad1bbc0cc21b53abc8",
+    label: "Example Ethereum USDC transfer",
+  },
+  base: {
+    hash:
+      process.env.NEXT_PUBLIC_EXAMPLE_BASE_TX ??
+      "0xe9ead06b3b46b237f72a31dd6ab5c17b60d636b977105930e102b9aa09e72972",
+    label: "Example Base USDC transfer",
+  },
+};
+
+export function getExampleTransaction(
+  chain: SupportedChain,
+): ExampleTransaction | null {
+  const example = EXAMPLE_TRANSACTIONS[chain];
+  if (!example?.hash?.trim()) return null;
+  return example;
+}
 
 export const DISCLAIMER =
   "Transaction Explainer helps make blockchain activity easier to understand. It does not determine whether a transaction, token, contract, or protocol is safe.";
@@ -102,9 +134,9 @@ export const DISCLAIMER =
 export const GITHUB_URL =
   "https://github.com/khalilahmed63/Transaction-Explainer";
 
+/** Canonical production URL — prefer env override, else APP_CONFIG.url. */
 export function getSiteUrl(): string {
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "https://transaction-explainer.vercel.app"
-  );
+  const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (fromEnv) return fromEnv.replace(/\/$/, "");
+  return APP_CONFIG.url;
 }

@@ -12,10 +12,15 @@ import {
 import type { SupportedChain } from "@/types/transaction";
 import { NetworkSelector } from "@/components/transaction/network-selector";
 import {
+  detectChainHintFromInput,
+  extractTxHash,
   getHashValidationError,
-  isValidTxHash,
-  normalizeHash,
 } from "@/lib/validation/transaction";
+import { getExampleTransaction } from "@/config/app";
+import {
+  setTransactionSource,
+  trackEvent,
+} from "@/lib/analytics";
 import { cn } from "@/lib/utils/cn";
 
 type TransactionSearchProps = {
@@ -41,17 +46,23 @@ export function TransactionSearch({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validationError = getHashValidationError(hash);
-  const canSubmit = isValidTxHash(hash) && !isPending;
+  const canSubmit = Boolean(extractTxHash(hash)) && !isPending;
   const canClearResults = Boolean(clearHref) && !isPending;
   const showFieldClear = !clearHref && hash.length > 0 && !isPending;
+  const example = getExampleTransaction(chain);
+  const showExampleCta = Boolean(example) && !clearHref && !isPending;
 
-  function submit(rawHash: string = hash, nextChain: SupportedChain = chain) {
-    if (!isValidTxHash(rawHash)) {
+  function submit(
+    rawHash: string = hash,
+    nextChain: SupportedChain = chain,
+    source: "manual" | "example" = "manual",
+  ) {
+    const normalized = extractTxHash(rawHash);
+    if (!normalized) {
       setError("That doesn't look like a valid transaction hash.");
       return;
     }
 
-    const normalized = normalizeHash(rawHash);
     const destination = `/tx/${nextChain}/${normalized}`;
 
     // Avoid double-navigating the same paste/submit.
@@ -60,17 +71,29 @@ export function TransactionSearch({
     }
 
     lastSubmittedRef.current = destination;
-    setHash(rawHash.trim());
+    setHash(normalized);
+    setChain(nextChain);
     setError(null);
+    setTransactionSource(source);
     startTransition(() => {
       router.push(destination);
     });
   }
 
-  function maybeAutoSubmit(raw: string, nextChain: SupportedChain = chain) {
-    const trimmed = raw.trim();
-    if (!isValidTxHash(trimmed)) return;
-    submit(trimmed, nextChain);
+  function resolvePaste(raw: string) {
+    const extracted = extractTxHash(raw);
+    if (!extracted) return;
+
+    const hinted = detectChainHintFromInput(raw);
+    const nextChain = hinted ?? chain;
+
+    setHash(extracted);
+    if (hinted && hinted !== chain) {
+      setChain(hinted);
+      trackEvent("network_selected", { chain: hinted });
+    }
+    setError(null);
+    submit(extracted, nextChain, "manual");
   }
 
   function onSubmit(e: FormEvent) {
@@ -80,21 +103,21 @@ export function TransactionSearch({
 
   function onHashPaste(e: ClipboardEvent<HTMLInputElement>) {
     const pasted = e.clipboardData.getData("text");
-    if (!isValidTxHash(pasted)) return;
+    if (!extractTxHash(pasted)) return;
 
     e.preventDefault();
-    setHash(pasted.trim());
-    setError(null);
-    maybeAutoSubmit(pasted);
+    resolvePaste(pasted);
   }
 
   async function onPaste() {
     try {
       const text = await navigator.clipboard.readText();
-      const trimmed = text.trim();
-      setHash(trimmed);
-      setError(null);
-      maybeAutoSubmit(trimmed);
+      if (!extractTxHash(text)) {
+        setHash(text.trim());
+        setError("That doesn't look like a valid transaction hash.");
+        return;
+      }
+      resolvePaste(text);
     } catch {
       setError("Couldn't read from clipboard. Paste manually instead.");
     }
@@ -120,9 +143,17 @@ export function TransactionSearch({
   function onChainChange(nextChain: SupportedChain) {
     if (nextChain === chain) return;
     setChain(nextChain);
-    if (isValidTxHash(hash)) {
-      submit(hash, nextChain);
+    trackEvent("network_selected", { chain: nextChain });
+    const normalized = extractTxHash(hash);
+    if (normalized) {
+      submit(normalized, nextChain, "manual");
     }
+  }
+
+  function onTryExample() {
+    if (!example) return;
+    trackEvent("example_transaction_clicked", { chain });
+    submit(example.hash, chain, "example");
   }
 
   return (
@@ -237,10 +268,25 @@ export function TransactionSearch({
           </button>
         </div>
 
-        <p className="mt-2 px-1 text-xs text-muted">
-          Paste a valid hash to explain automatically. Changing the network
-          reloads the same hash on that chain.
-        </p>
+        {showExampleCta && (
+          <div className="mt-3 flex justify-center px-1">
+            <button
+              type="button"
+              onClick={onTryExample}
+              aria-label={`Try an example ${chain} transaction`}
+              className="text-sm text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:rounded-md"
+            >
+              Don&apos;t have a transaction? Try an example →
+            </button>
+          </div>
+        )}
+
+        {!showExampleCta && (
+          <p className="mt-2 px-1 text-xs text-muted">
+            Paste a valid hash to explain automatically. Changing the network
+            reloads the same hash on that chain.
+          </p>
+        )}
 
         {(error || (hash && validationError)) && (
           <p

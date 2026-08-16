@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  APP_CONFIG,
   APP_NAME,
   APP_TAGLINE,
   DISCLAIMER,
@@ -14,6 +15,18 @@ export function Footer() {
           <div>
             <p className="text-sm font-semibold text-foreground">{APP_NAME}</p>
             <p className="mt-1 max-w-sm text-sm text-muted">{APP_TAGLINE}</p>
+            <p className="mt-3 text-sm text-muted">
+              Built by{" "}
+              <a
+                href={APP_CONFIG.creator.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline-offset-2 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:rounded-sm"
+              >
+                {APP_CONFIG.creator.name}
+                <span aria-hidden> ↗</span>
+              </a>
+            </p>
           </div>
           <nav
             className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted"
@@ -24,9 +37,6 @@ export function Footer() {
             </Link>
             <Link href="/#how-it-works" className="hover:text-foreground">
               How it works
-            </Link>
-            <Link href="/#about" className="hover:text-foreground">
-              About
             </Link>
             <Link href="/#faq" className="hover:text-foreground">
               FAQ

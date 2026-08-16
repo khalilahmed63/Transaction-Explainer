@@ -23,6 +23,27 @@ describe("validation", () => {
     );
   });
 
+  it("extracts hashes from explorer URLs and detects chain hints", async () => {
+    const {
+      extractTxHash,
+      detectChainHintFromInput,
+    } = await import("@/lib/validation/transaction");
+
+    const hash =
+      "0xd5a4dab2691e1e6374173a17597184245d2d0296804475ad1bbc0cc21b53abc8";
+
+    expect(
+      extractTxHash(`https://basescan.org/tx/${hash}`),
+    ).toBe(hash);
+    expect(
+      detectChainHintFromInput(`https://basescan.org/tx/${hash}`),
+    ).toBe("base");
+    expect(
+      detectChainHintFromInput(`https://etherscan.io/tx/${hash}`),
+    ).toBe("ethereum");
+    expect(detectChainHintFromInput(hash)).toBeNull();
+  });
+
   it("validates chains", () => {
     expect(isSupportedChain("ethereum")).toBe(true);
     expect(isSupportedChain("base")).toBe(true);

@@ -26,7 +26,7 @@ This is **not** a wallet, portfolio tracker, blockchain explorer, security scann
 
 ## Analytics
 
-The app includes [Vercel Web Analytics](https://vercel.com/docs/analytics) and [Speed Insights](https://vercel.com/docs/speed-insights). After deploying to Vercel, enable both in the project dashboard under **Analytics** and **Speed Insights** so data appears for production traffic.
+The app uses [Vercel Web Analytics](https://vercel.com/docs/analytics) (page views + custom events) and [Speed Insights](https://vercel.com/docs/speed-insights). Enable both in the Vercel project dashboard. Custom events are wrapped in `src/lib/analytics/` and never include transaction hashes or wallet addresses.
 
 ## Local Development
 
@@ -45,7 +45,9 @@ Open [http://localhost:3000](http://localhost:3000).
 | --- | --- | --- |
 | `ETHEREUM_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Ethereum Mainnet |
 | `BASE_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Base Mainnet |
-| `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL for SEO metadata, sitemap, and Open Graph (set this in production) |
+| `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL (defaults to `https://tx.tomnitive.com`) |
+| `NEXT_PUBLIC_EXAMPLE_ETHEREUM_TX` | No | Override Ethereum “Try an example” hash |
+| `NEXT_PUBLIC_EXAMPLE_BASE_TX` | No | Override Base “Try an example” hash |
 
 RPC URLs are used **only on the server**. Do not commit real credentials.
 

@@ -1,7 +1,8 @@
 import {
+  APP_CAPABILITIES,
+  APP_CONFIG,
   APP_DESCRIPTION,
   APP_FAQ,
-  APP_FEATURES,
   APP_NAME,
   APP_TAGLINE,
   getSiteUrl,
@@ -32,15 +33,15 @@ export function JsonLd() {
       price: "0",
       priceCurrency: "USD",
     },
-    featureList: APP_FEATURES.map((feature) => feature.title),
+    featureList: APP_CAPABILITIES.map((feature) => feature.title),
     browserRequirements: "Requires a modern web browser with JavaScript enabled",
   };
 
   const organization = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: APP_NAME,
-    url: siteUrl,
+    name: APP_CONFIG.creator.name,
+    url: APP_CONFIG.creator.url,
     description: APP_TAGLINE,
   };
 
