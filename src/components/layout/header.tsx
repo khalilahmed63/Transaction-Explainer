@@ -11,7 +11,7 @@ export function Header() {
           href="/"
           className="group flex items-center gap-2.5 rounded-md text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
-          <span className="flex size-8 items-center justify-center rounded-lg bg-accent/10 text-accent">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-brand text-accent-foreground shadow-sm shadow-accent/20">
             <ArrowLeftRight className="size-4" aria-hidden />
           </span>
           <span className="text-sm font-semibold tracking-tight sm:text-[15px]">

@@ -248,8 +248,8 @@ export function TransactionSearch({
             type="submit"
             disabled={!canSubmit}
             className={cn(
-              "mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-semibold text-accent-foreground transition-all",
-              "hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              "mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-brand px-6 text-sm font-semibold text-accent-foreground shadow-sm shadow-accent/20 transition-all",
+              "hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               "disabled:cursor-not-allowed disabled:opacity-50",
               isPending && "cursor-wait",
             )}

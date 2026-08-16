@@ -21,7 +21,7 @@ export function Footer() {
                 href={APP_CONFIG.creator.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline-offset-2 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:rounded-sm"
+                className="font-medium text-accent underline-offset-2 transition-colors hover:text-accent-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:rounded-sm"
               >
                 {APP_CONFIG.creator.name}
                 <span aria-hidden> ↗</span>

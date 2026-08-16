@@ -76,7 +76,7 @@ export function TransactionError({
       )}
       <Link
         href="/"
-        className="mt-8 inline-flex h-11 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className="mt-8 inline-flex h-11 items-center justify-center rounded-xl bg-gradient-brand px-5 text-sm font-semibold text-accent-foreground shadow-sm shadow-accent/20 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
         Try another transaction
       </Link>

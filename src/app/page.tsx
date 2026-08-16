@@ -17,6 +17,7 @@ import {
   APP_FAQ,
   APP_NAME,
   DISCLAIMER,
+  SUPPORTED_CHAINS,
 } from "@/config/app";
 
 export const metadata: Metadata = {
@@ -39,11 +40,12 @@ export default function HomePage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 pb-24 pt-14 sm:px-6 sm:pt-20">
       <section className="animate-rise text-center">
-        <div className="mb-6 flex items-center justify-center gap-2">
-          <ChainIcon chain="ethereum" size="md" />
-          <ChainIcon chain="base" size="md" />
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
+          {SUPPORTED_CHAINS.map((chain) => (
+            <ChainIcon key={chain} chain={chain} size="md" />
+          ))}
         </div>
-        <p className="mb-3 text-sm font-medium text-accent">
+        <p className="mb-3 text-sm font-medium text-gradient">
           Free · No wallet required · 7 EVM networks
         </p>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl sm:leading-tight">
@@ -89,7 +91,7 @@ export default function HomePage() {
                 key={feature.id}
                 className="rounded-2xl border border-border bg-surface p-5"
               >
-                <div className="flex size-9 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-brand text-accent-foreground shadow-sm shadow-accent/15">
                   <Icon className="size-4" aria-hidden />
                 </div>
                 <h3 className="mt-3 text-sm font-semibold text-foreground">
@@ -138,7 +140,7 @@ export default function HomePage() {
               key={item.step}
               className="flex gap-4 rounded-2xl border border-border/70 bg-surface/50 p-4 sm:p-5"
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-brand text-sm font-semibold text-accent-foreground">
                 {item.step}
               </span>
               <div>

@@ -17,7 +17,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0f766e",
+          background: "linear-gradient(135deg, #9362f4 0%, #0092f9 100%)",
           borderRadius: 8,
         }}
       >
@@ -26,7 +26,7 @@ export default function Icon() {
           height="20"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#ffffff"
+          stroke="#fafcff"
           strokeWidth="2.4"
           strokeLinecap="round"
           strokeLinejoin="round"

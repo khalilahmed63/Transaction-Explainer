@@ -17,8 +17,8 @@ export default function TwitterImage() {
           justifyContent: "space-between",
           padding: "64px",
           background:
-            "linear-gradient(145deg, #0f766e 0%, #115e59 45%, #134e4a 100%)",
-          color: "#ffffff",
+            "linear-gradient(135deg, #9362f4 0%, #6d4ae8 45%, #0092f9 100%)",
+          color: "#fafcff",
           fontFamily: "ui-sans-serif, system-ui, sans-serif",
         }}
       >

@@ -2,34 +2,50 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+  Brand tokens aligned with https://www.tomnitive.com/
+  Purple accent + blue accent-2, cool paper/ink neutrals.
+*/
 :root {
-  --background: #f7f7f5;
-  --foreground: #141413;
+  --background: #f7f8fa;
+  --foreground: #0c121a;
   --surface: #ffffff;
-  --surface-hover: #efefec;
-  --border: #e4e4e0;
-  --muted: #6b6b66;
-  --accent: #0f766e;
-  --accent-hover: #0d5f58;
-  --accent-foreground: #ffffff;
-  --success: #15803d;
-  --danger: #b91c1c;
+  --surface-hover: #e9ebef;
+  --border: #d4d8de;
+  --muted: #4f5661;
+  --accent: #9362f4;
+  --accent-hover: #7c4ae8;
+  --accent-2: #0092f9;
+  --accent-foreground: #fafcff;
+  --success: #00a544;
+  --danger: #e40014;
   --warning: #a16207;
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-2) 100%
+  );
 }
 
 .dark {
-  --background: #121211;
-  --foreground: #f3f3f0;
-  --surface: #1c1c1a;
-  --surface-hover: #262624;
-  --border: #2e2e2b;
-  --muted: #a3a39c;
-  --accent: #2dd4bf;
-  --accent-hover: #5eead4;
-  --accent-foreground: #042f2e;
-  --success: #4ade80;
-  --danger: #f87171;
-  --warning: #fbbf24;
+  --background: #050911;
+  --foreground: #f7f8fa;
+  --surface: #0c121a;
+  --surface-hover: #151c28;
+  --border: #243044;
+  --muted: #9aa3b2;
+  --accent: #a87cff;
+  --accent-hover: #c4a6ff;
+  --accent-2: #38bdf8;
+  --accent-foreground: #fafcff;
+  --success: #05df72;
+  --danger: #ff6568;
+  --warning: #fac800;
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-2) 100%
+  );
 }
 
 @theme inline {
@@ -41,12 +57,23 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-2: var(--accent-2);
   --color-accent-foreground: var(--accent-foreground);
   --color-success: var(--success);
   --color-danger: var(--danger);
   --color-warning: var(--warning);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+@utility bg-gradient-brand {
+  background-image: var(--gradient-brand);
+}
+
+@utility text-gradient {
+  background-image: var(--gradient-brand);
+  background-clip: text;
+  color: transparent;
 }
 
 html {
@@ -59,7 +86,7 @@ body {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Subtle atmospheric background without flat single color */
+/* Atmospheric brand wash — purple → blue, matching Tomnitive hero glow */
 body::before {
   content: "";
   pointer-events: none;
@@ -67,13 +94,26 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--accent) 8%, transparent), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, color-mix(in srgb, var(--accent) 4%, transparent), transparent),
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 100% 0%,
+      color-mix(in srgb, var(--accent-2) 12%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 50% 35% at 0% 100%,
+      color-mix(in srgb, var(--accent) 8%, transparent),
+      transparent
+    ),
     var(--background);
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 25%, transparent);
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 :focus-visible {
