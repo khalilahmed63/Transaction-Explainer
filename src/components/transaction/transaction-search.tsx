@@ -2,7 +2,13 @@
 
 import { ClipboardPaste, LoaderCircle, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState, useTransition } from "react";
+import {
+  ClipboardEvent,
+  FormEvent,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import type { SupportedChain } from "@/types/transaction";
 import { NetworkSelector } from "@/components/transaction/network-selector";
 import {
@@ -28,20 +34,37 @@ export function TransactionSearch({
   const [hash, setHash] = useState(defaultHash);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const lastSubmittedRef = useRef<string | null>(null);
 
   const validationError = getHashValidationError(hash);
   const canSubmit = isValidTxHash(hash) && !isPending;
 
-  function submit() {
-    if (!isValidTxHash(hash)) {
+  function submit(rawHash: string = hash, nextChain: SupportedChain = chain) {
+    if (!isValidTxHash(rawHash)) {
       setError("That doesn't look like a valid transaction hash.");
       return;
     }
+
+    const normalized = normalizeHash(rawHash);
+    const destination = `/tx/${nextChain}/${normalized}`;
+
+    // Avoid double-navigating the same paste/submit.
+    if (isPending && lastSubmittedRef.current === destination) {
+      return;
+    }
+
+    lastSubmittedRef.current = destination;
+    setHash(rawHash.trim());
     setError(null);
-    const normalized = normalizeHash(hash);
     startTransition(() => {
-      router.push(`/tx/${chain}/${normalized}`);
+      router.push(destination);
     });
+  }
+
+  function maybeAutoSubmit(raw: string, nextChain: SupportedChain = chain) {
+    const trimmed = raw.trim();
+    if (!isValidTxHash(trimmed)) return;
+    submit(trimmed, nextChain);
   }
 
   function onSubmit(e: FormEvent) {
@@ -49,11 +72,23 @@ export function TransactionSearch({
     submit();
   }
 
+  function onHashPaste(e: ClipboardEvent<HTMLInputElement>) {
+    const pasted = e.clipboardData.getData("text");
+    if (!isValidTxHash(pasted)) return;
+
+    e.preventDefault();
+    setHash(pasted.trim());
+    setError(null);
+    maybeAutoSubmit(pasted);
+  }
+
   async function onPaste() {
     try {
       const text = await navigator.clipboard.readText();
-      setHash(text.trim());
+      const trimmed = text.trim();
+      setHash(trimmed);
       setError(null);
+      maybeAutoSubmit(trimmed);
     } catch {
       setError("Couldn't read from clipboard. Paste manually instead.");
     }
@@ -83,6 +118,7 @@ export function TransactionSearch({
               placeholder="Paste transaction hash — 0x..."
               value={hash}
               disabled={isPending}
+              onPaste={onHashPaste}
               onChange={(e) => {
                 setHash(e.target.value);
                 setError(null);
@@ -135,6 +171,10 @@ export function TransactionSearch({
           )}
         </button>
       </div>
+
+      <p className="mt-2 px-1 text-xs text-muted">
+        Paste a valid hash to explain automatically — or press the button.
+      </p>
 
       {(error || (hash && validationError)) && (
         <p id="tx-hash-error" className="mt-2 px-1 text-sm text-danger" role="alert">

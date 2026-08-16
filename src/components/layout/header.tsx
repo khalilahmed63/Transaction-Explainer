@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeftRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { APP_NAME, GITHUB_URL } from "@/config/app";
+import { APP_NAME } from "@/config/app";
 
 export function Header() {
   return (
@@ -38,14 +38,6 @@ export function Header() {
           >
             FAQ
           </Link>
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden rounded-md px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:inline"
-          >
-            GitHub
-          </a>
           <ThemeToggle />
         </nav>
       </div>

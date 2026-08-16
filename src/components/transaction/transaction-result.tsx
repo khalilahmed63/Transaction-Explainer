@@ -77,8 +77,6 @@ export function TransactionResult({ tx }: TransactionResultProps) {
               iconUrl={tx.walletImpact.received[0]?.iconUrl}
             />
           )}
-          <TokenTransferList transfers={tx.tokenTransfers} chain={tx.chain} />
-          <ApprovalCard approvals={tx.approvals} chain={tx.chain} />
         </>
       )}
 
@@ -91,6 +89,13 @@ export function TransactionResult({ tx }: TransactionResultProps) {
         )}
 
       <GasFeeCard fee={tx.gas.fee} symbol={tx.gas.symbol} chain={tx.chain} />
+
+      {!isFailed && (
+        <>
+          <TokenTransferList transfers={tx.tokenTransfers} chain={tx.chain} />
+          <ApprovalCard approvals={tx.approvals} chain={tx.chain} />
+        </>
+      )}
 
       <TechnicalDetails tx={tx} />
 
