@@ -1,4 +1,13 @@
-export type SupportedChain = "ethereum" | "base";
+export type SupportedChain =
+  | "ethereum"
+  | "base"
+  | "arbitrum"
+  | "polygon"
+  | "bsc"
+  | "optimism"
+  | "avalanche";
+
+export type NativeCurrencySymbol = "ETH" | "POL" | "BNB" | "AVAX";
 
 export type TransactionStatus = "success" | "failed" | "pending";
 
@@ -71,7 +80,7 @@ export type TransactionExplanation = {
     gasUsed?: string;
     effectiveGasPrice?: string;
     fee?: string;
-    symbol: "ETH";
+    symbol: NativeCurrencySymbol;
   };
   tokenTransfers: TokenTransfer[];
   approvals: TokenApproval[];

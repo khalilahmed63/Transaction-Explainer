@@ -3,9 +3,11 @@
 import { useMemo, useState } from "react";
 import type { SupportedChain } from "@/types/transaction";
 import {
+  getKnownIconUrl,
   getTokenFallbackColor,
   getTokenIconCandidates,
 } from "@/lib/tokens/icons";
+import { ChainIcon } from "@/components/ui/chain-icon";
 import { cn } from "@/lib/utils/cn";
 
 type TokenIconProps = {
@@ -24,14 +26,7 @@ const SIZES = {
   lg: "size-10 text-sm",
 } as const;
 
-function EthGlyph({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
-      <path d="M12 1.75 5.75 12.25l6.25 2.7 6.25-2.7L12 1.75Z" opacity="0.7" />
-      <path d="M12 16.15 5.75 13.25 12 22.25l6.25-9-6.25 2.9Z" />
-    </svg>
-  );
-}
+const NATIVE_SYMBOLS = new Set(["ETH", "POL", "BNB", "AVAX"]);
 
 export function TokenIcon({
   symbol,
@@ -44,7 +39,7 @@ export function TokenIcon({
 }: TokenIconProps) {
   const native =
     Boolean(isNative) ||
-    (symbol.toUpperCase() === "ETH" && !tokenAddress);
+    (NATIVE_SYMBOLS.has(symbol.toUpperCase()) && !tokenAddress);
 
   const candidates = useMemo(
     () =>
@@ -57,21 +52,34 @@ export function TokenIcon({
   const [index, setIndex] = useState(0);
   const letter = (symbol || "?").slice(0, 1).toUpperCase();
   const currentUrl = candidates[index];
+  const nativeIcon = native
+    ? getKnownIconUrl(chain, undefined, symbol)
+    : null;
 
   if (native) {
-    return (
-      <span
-        className={cn(
-          "inline-flex shrink-0 items-center justify-center rounded-full bg-[#627EEA] text-white ring-1 ring-black/5",
-          SIZES[size],
-          className,
-        )}
-        title={symbol}
-        aria-hidden
-      >
-        <EthGlyph className="size-[55%]" />
-      </span>
-    );
+    if (nativeIcon) {
+      return (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={nativeIcon}
+          alt=""
+          width={40}
+          height={40}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          className={cn(
+            "inline-block shrink-0 rounded-full bg-surface ring-1 ring-border object-cover",
+            SIZES[size],
+            className,
+          )}
+          title={symbol}
+        />
+      );
+    }
+
+    const chainSize = size === "lg" ? "lg" : size === "sm" ? "sm" : "md";
+    return <ChainIcon chain={chain} size={chainSize} className={className} />;
   }
 
   if (currentUrl) {

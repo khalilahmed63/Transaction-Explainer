@@ -48,7 +48,7 @@ async function handleExplain(chain: string, hash: string, ip: string) {
       ok: false,
       error: {
         code: "invalid_chain",
-        message: "Please choose Ethereum or Base.",
+        message: "Please choose a supported network.",
       },
     };
     return NextResponse.json(body, { status: 400 });
@@ -104,7 +104,7 @@ async function handleExplain(chain: string, hash: string, ip: string) {
         error: {
           code: "rpc_error",
           message:
-            "Blockchain RPC is not configured. Set ETHEREUM_RPC_URL and BASE_RPC_URL.",
+            "Blockchain RPC is not configured. Set the network RPC URL environment variables.",
         },
       };
       return NextResponse.json(body, { status: 503 });

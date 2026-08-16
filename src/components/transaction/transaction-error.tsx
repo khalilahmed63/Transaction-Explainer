@@ -60,16 +60,18 @@ export function TransactionError({
           <p className="text-xs font-medium uppercase tracking-wider text-muted">
             Try another network
           </p>
-          {alternates.map((alt) => (
-            <Link
-              key={alt}
-              href={`/tx/${alt}/${hash}`}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-            >
-              <ChainIcon chain={alt} size="sm" />
-              Search on {getChainConfig(alt).name}
-            </Link>
-          ))}
+          <div className="max-h-48 space-y-2 overflow-y-auto overscroll-contain">
+            {alternates.map((alt) => (
+              <Link
+                key={alt}
+                href={`/tx/${alt}/${hash}`}
+                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              >
+                <ChainIcon chain={alt} size="sm" />
+                Search on {getChainConfig(alt).name}
+              </Link>
+            ))}
+          </div>
         </div>
       )}
       <Link

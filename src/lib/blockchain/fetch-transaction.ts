@@ -120,6 +120,8 @@ export const explainTransaction = cache(async function explainTransaction(
     tokenTransfers,
     nativeValueWei: status === "success" ? tx.value : 0n,
     to: tx.to,
+    nativeSymbol: chainConfig.nativeSymbol,
+    nativeName: chainConfig.nativeName,
   });
 
   const hasInputData = Boolean(tx.input && tx.input !== "0x");
@@ -176,7 +178,7 @@ export const explainTransaction = cache(async function explainTransaction(
     tx.value > 0n
       ? {
           amount: formatTokenAmount(formatEther(tx.value)),
-          symbol: "ETH" as const,
+          symbol: chainConfig.nativeSymbol,
         }
       : undefined;
 
@@ -197,7 +199,7 @@ export const explainTransaction = cache(async function explainTransaction(
         ? `${formatTokenAmount(formatGwei(effectiveGasPrice))} Gwei`
         : undefined,
       fee,
-      symbol: "ETH",
+      symbol: chainConfig.nativeSymbol,
     },
     tokenTransfers,
     approvals,

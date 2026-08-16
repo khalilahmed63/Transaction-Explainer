@@ -1,14 +1,19 @@
 import { formatEther } from "viem";
 import type {
   AssetMovement,
+  NativeCurrencySymbol,
   TokenTransfer,
 } from "@/types/transaction";
 import { formatTokenAmount } from "@/lib/utils/format";
 
 type AggregateKey = string;
 
-function keyFor(symbol: string, tokenAddress?: string, isNative?: boolean): AggregateKey {
-  if (isNative) return "native:ETH";
+function keyFor(
+  symbol: string,
+  tokenAddress?: string,
+  isNative?: boolean,
+): AggregateKey {
+  if (isNative) return `native:${symbol}`;
   return `token:${(tokenAddress ?? symbol).toLowerCase()}`;
 }
 
@@ -17,8 +22,12 @@ export function computeWalletImpact(params: {
   tokenTransfers: TokenTransfer[];
   nativeValueWei?: bigint;
   to?: string | null;
+  nativeSymbol?: NativeCurrencySymbol;
+  nativeName?: string;
 }): { sent: AssetMovement[]; received: AssetMovement[] } {
   const wallet = params.wallet.toLowerCase();
+  const nativeSymbol = params.nativeSymbol ?? "ETH";
+  const nativeName = params.nativeName ?? "Ether";
   const sentMap = new Map<AggregateKey, AssetMovement & { raw: bigint }>();
   const receivedMap = new Map<AggregateKey, AssetMovement & { raw: bigint }>();
 
@@ -82,19 +91,16 @@ export function computeWalletImpact(params: {
     }
   }
 
-  // Native ETH sent by initiator
+  // Native currency sent by initiator
   if (params.nativeValueWei && params.nativeValueWei > 0n) {
     add(sentMap, {
-      symbol: "ETH",
-      name: "Ether",
+      symbol: nativeSymbol,
+      name: nativeName,
       raw: params.nativeValueWei,
       decimals: 18,
       isNative: true,
     });
   }
-
-  // If native ETH was received by the wallet (rare for initiator, but handle)
-  // Note: receipt doesn't give internal calls; we only know tx.value direction.
 
   function toMovement(
     item: AssetMovement & { raw: bigint },

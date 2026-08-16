@@ -62,15 +62,13 @@ export default function TwitterImage() {
               lineHeight: 1.35,
             }}
           >
-            Paste an Ethereum or Base hash and see transfers, swaps, approvals,
+            Paste an EVM transaction hash and see transfers, swaps, approvals,
             and fees in plain English.
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 12, fontSize: 18, opacity: 0.85 }}>
-          <span>Ethereum</span>
-          <span>·</span>
-          <span>Base</span>
+          <span>Major EVM networks</span>
           <span>·</span>
           <span>No wallet required</span>
         </div>

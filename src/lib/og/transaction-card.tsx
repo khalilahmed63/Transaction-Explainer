@@ -6,7 +6,7 @@ export const OG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_CONTENT_TYPE = "image/png";
 
 const TYPE_LABELS: Record<TransactionType, string> = {
-  native_transfer: "ETH Transfer",
+  native_transfer: "Native Transfer",
   token_transfer: "Token Transfer",
   token_approval: "Approval",
   token_swap: "Swap",
@@ -86,7 +86,7 @@ export function renderStaticOgImage(altHeadline = "Understand any crypto transac
               lineHeight: 1.35,
             }}
           >
-            Paste an Ethereum or Base hash and see transfers, swaps, approvals,
+            Paste an EVM transaction hash and see transfers, swaps, approvals,
             and fees in plain English.
           </div>
         </div>
@@ -99,9 +99,7 @@ export function renderStaticOgImage(altHeadline = "Understand any crypto transac
             opacity: 0.85,
           }}
         >
-          <span>Ethereum</span>
-          <span>·</span>
-          <span>Base</span>
+          <span>Major EVM networks</span>
           <span>·</span>
           <span>No wallet required</span>
         </div>

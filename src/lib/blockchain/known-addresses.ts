@@ -110,6 +110,11 @@ const BASE_KNOWN: Record<string, KnownAddress> = {
 const KNOWN_BY_CHAIN: Record<SupportedChain, Record<string, KnownAddress>> = {
   ethereum: ETHEREUM_KNOWN,
   base: BASE_KNOWN,
+  arbitrum: {},
+  polygon: {},
+  bsc: {},
+  optimism: {},
+  avalanche: {},
 };
 
 export function getAddressLabel(

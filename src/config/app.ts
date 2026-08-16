@@ -1,4 +1,5 @@
 import type { SupportedChain } from "@/types/transaction";
+import { CHAIN_ORDER } from "@/lib/blockchain/chains";
 
 export const APP_CONFIG = {
   name: "Transaction Explainer",
@@ -15,23 +16,27 @@ export const APP_VERSION = "0.1";
 export const APP_TAGLINE = "Blockchain transactions, explained simply.";
 
 export const APP_DESCRIPTION =
-  "Paste an Ethereum or Base transaction hash and understand what happened in plain English — including token transfers, swaps, approvals, wallet impact, and gas fees.";
+  "Paste a transaction hash from Ethereum, Base, Arbitrum, Polygon, BNB Chain, Optimism, or Avalanche and understand what happened in plain English — including token transfers, swaps, approvals, wallet impact, and gas fees.";
 
 export const APP_ABOUT =
-  "Transaction Explainer translates Ethereum and Base transaction activity into simple, readable explanations. It helps users understand token transfers, swaps, approvals, gas fees, and wallet impact without navigating raw blockchain data.";
+  "Transaction Explainer translates EVM transaction activity into simple, readable explanations. It helps users understand token transfers, swaps, approvals, gas fees, and wallet impact without navigating raw blockchain data.";
 
 export const APP_KEYWORDS = [
   "transaction explainer",
   "crypto transaction explained",
   "ethereum transaction decoder",
   "base transaction explained",
+  "arbitrum transaction explained",
+  "polygon transaction explained",
+  "bnb chain transaction explained",
+  "optimism transaction explained",
+  "avalanche transaction explained",
   "blockchain transaction summary",
   "ERC-20 transfer explained",
   "token swap explained",
   "crypto gas fee",
   "wallet impact",
   "plain English blockchain",
-  "etherscan alternative simple",
   "understand crypto transaction",
 ] as const;
 
@@ -73,7 +78,7 @@ export const APP_FAQ = [
   {
     question: "Which networks are supported?",
     answer:
-      "Version 0.1 supports Ethereum Mainnet and Base Mainnet.",
+      "Version 0.1 supports Ethereum, Base, Arbitrum, Polygon, BNB Chain, Optimism, and Avalanche.",
   },
   {
     question: "Do I need to connect my wallet?",
@@ -88,11 +93,11 @@ export const APP_FAQ = [
   {
     question: "What transactions can it explain?",
     answer:
-      "Basic ETH transfers, token transfers, approvals, swaps, claims, contract interactions, gas fees, and wallet impact — based on what is visible on-chain.",
+      "Native transfers, token transfers, approvals, swaps, claims, contract interactions, gas fees, and wallet impact — based on what is visible on-chain.",
   },
 ] as const;
 
-export const SUPPORTED_CHAINS: SupportedChain[] = ["ethereum", "base"];
+export const SUPPORTED_CHAINS: SupportedChain[] = [...CHAIN_ORDER];
 
 export type ExampleTransaction = {
   hash: string;
@@ -117,6 +122,36 @@ export const EXAMPLE_TRANSACTIONS: Partial<
       process.env.NEXT_PUBLIC_EXAMPLE_BASE_TX ??
       "0xe9ead06b3b46b237f72a31dd6ab5c17b60d636b977105930e102b9aa09e72972",
     label: "Example Base USDC transfer",
+  },
+  arbitrum: {
+    hash:
+      process.env.NEXT_PUBLIC_EXAMPLE_ARBITRUM_TX ??
+      "0xcd92e0125e52e50f6ffe918ee02eccfaee32b7d305812b40c99308e43996f58d",
+    label: "Example Arbitrum USDC transfer",
+  },
+  polygon: {
+    hash:
+      process.env.NEXT_PUBLIC_EXAMPLE_POLYGON_TX ??
+      "0xd7270a2399ec2ee1964a476c482d1ca8a89c71af97312f478f85e28385a68b4d",
+    label: "Example Polygon USDC transfer",
+  },
+  bsc: {
+    hash:
+      process.env.NEXT_PUBLIC_EXAMPLE_BSC_TX ??
+      "0x808436d48de86041f00af167595d58eb43ac8db30bbe277aa7cfea59836861ee",
+    label: "Example BNB Chain transfer",
+  },
+  optimism: {
+    hash:
+      process.env.NEXT_PUBLIC_EXAMPLE_OPTIMISM_TX ??
+      "0x873e19143725a3bd70363b27e05cfe88c49805eb97b08be921307c791e818d77",
+    label: "Example Optimism USDC transfer",
+  },
+  avalanche: {
+    hash:
+      process.env.NEXT_PUBLIC_EXAMPLE_AVALANCHE_TX ??
+      "0x1633462cd1afaffa079b46fb5b5a3edb1ee9e7f949e3b9d8a7efb8b36c350c83",
+    label: "Example Avalanche USDC transfer",
   },
 };
 

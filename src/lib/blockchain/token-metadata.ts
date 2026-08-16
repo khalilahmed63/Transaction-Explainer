@@ -8,6 +8,7 @@ import {
 } from "viem";
 import type { SupportedChain } from "@/types/transaction";
 import { resolveTokenIconUrl } from "@/lib/tokens/icons";
+import { getChainConfig, getSupportedChainById } from "@/lib/blockchain/chains";
 
 export type TokenMetadata = {
   address: Address;
@@ -79,7 +80,9 @@ function cacheKey(chainId: number, address: string): string {
 }
 
 function chainFromClient(client: PublicClient): SupportedChain {
-  return client.chain?.id === 8453 ? "base" : "ethereum";
+  const id = client.chain?.id;
+  if (id == null) return "ethereum";
+  return getSupportedChainById(id) ?? "ethereum";
 }
 
 function decodeBytes32(value: `0x${string}`): string {
@@ -174,7 +177,7 @@ async function fetchGeckoMeta(
   chain: SupportedChain,
   tokenAddress: Address,
 ): Promise<Pick<TokenMetadata, "symbol" | "name" | "decimals"> | null> {
-  const network = chain === "base" ? "base" : "eth";
+  const network = getChainConfig(chain).geckoNetwork;
   try {
     const res = await fetch(
       `https://api.geckoterminal.com/api/v2/networks/${network}/tokens/${tokenAddress.toLowerCase()}`,

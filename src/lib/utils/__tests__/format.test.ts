@@ -47,6 +47,11 @@ describe("validation", () => {
   it("validates chains", () => {
     expect(isSupportedChain("ethereum")).toBe(true);
     expect(isSupportedChain("base")).toBe(true);
+    expect(isSupportedChain("arbitrum")).toBe(true);
+    expect(isSupportedChain("polygon")).toBe(true);
+    expect(isSupportedChain("bsc")).toBe(true);
+    expect(isSupportedChain("optimism")).toBe(true);
+    expect(isSupportedChain("avalanche")).toBe(true);
     expect(isSupportedChain("solana")).toBe(false);
   });
 });

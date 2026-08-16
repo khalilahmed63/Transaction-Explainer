@@ -3,7 +3,7 @@
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import type { SupportedChain } from "@/types/transaction";
-import { CHAIN_CONFIG } from "@/lib/blockchain/chains";
+import { CHAIN_CONFIG, CHAIN_ORDER } from "@/lib/blockchain/chains";
 import { ChainIcon } from "@/components/ui/chain-icon";
 import { cn } from "@/lib/utils/cn";
 
@@ -53,14 +53,14 @@ export function NetworkSelector({
           "flex h-12 items-center gap-2.5 rounded-xl border border-border bg-surface px-3 text-sm font-medium text-foreground transition-all",
           "hover:bg-surface-hover hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
           "disabled:cursor-not-allowed disabled:opacity-60",
-          "sm:min-w-[158px]",
+          "sm:min-w-[168px]",
         )}
       >
         <ChainIcon chain={value} size="sm" />
-        <span>{config.name}</span>
+        <span className="truncate">{config.name}</span>
         <ChevronDown
           className={cn(
-            "ml-auto size-4 text-muted transition-transform duration-200",
+            "ml-auto size-4 shrink-0 text-muted transition-transform duration-200",
             open && "rotate-180",
           )}
           aria-hidden
@@ -72,9 +72,9 @@ export function NetworkSelector({
           id={listId}
           role="listbox"
           aria-label="Select network"
-          className="animate-in absolute left-0 top-full z-50 mt-1.5 min-w-[180px] overflow-hidden rounded-xl border border-border bg-surface py-1 shadow-lg shadow-black/8"
+          className="animate-in absolute left-0 top-full z-50 mt-1.5 max-h-72 min-w-[200px] overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface py-1 shadow-lg shadow-black/8"
         >
-          {(Object.keys(CHAIN_CONFIG) as SupportedChain[]).map((chain) => {
+          {CHAIN_ORDER.map((chain) => {
             const selected = chain === value;
             return (
               <li key={chain} role="option" aria-selected={selected}>

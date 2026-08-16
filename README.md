@@ -12,6 +12,11 @@ This is **not** a wallet, portfolio tracker, blockchain explorer, security scann
 
 - Ethereum Mainnet
 - Base Mainnet
+- Arbitrum One
+- Polygon
+- BNB Smart Chain
+- OP Mainnet
+- Avalanche C-Chain
 
 ## Features
 
@@ -45,6 +50,11 @@ Open [http://localhost:3000](http://localhost:3000).
 | --- | --- | --- |
 | `ETHEREUM_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Ethereum Mainnet |
 | `BASE_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Base Mainnet |
+| `ARBITRUM_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Arbitrum One |
+| `POLYGON_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Polygon |
+| `BSC_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for BNB Smart Chain |
+| `OPTIMISM_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for OP Mainnet |
+| `AVALANCHE_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Avalanche C-Chain |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL (defaults to `https://tx.tomnitive.com`) |
 | `NEXT_PUBLIC_EXAMPLE_ETHEREUM_TX` | No | Override Ethereum “Try an example” hash |
 | `NEXT_PUBLIC_EXAMPLE_BASE_TX` | No | Override Base “Try an example” hash |

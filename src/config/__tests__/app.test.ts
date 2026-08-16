@@ -17,6 +17,21 @@ describe("example transactions", () => {
     expect(base?.hash).toBe(EXAMPLE_TRANSACTIONS.base?.hash);
   });
 
+  it("supports all seven chain examples when configured", () => {
+    for (const chain of [
+      "ethereum",
+      "base",
+      "arbitrum",
+      "polygon",
+      "bsc",
+      "optimism",
+      "avalanche",
+    ] as const) {
+      const example = getExampleTransaction(chain);
+      expect(example?.hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    }
+  });
+
   it("treats blank hashes as missing examples", () => {
     expect(Boolean("".trim())).toBe(false);
     expect(Boolean("  ".trim())).toBe(false);

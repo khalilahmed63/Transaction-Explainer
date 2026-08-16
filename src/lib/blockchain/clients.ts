@@ -3,12 +3,12 @@ import type { SupportedChain } from "@/types/transaction";
 import { getChainConfig } from "./chains";
 
 function getRpcUrl(chain: SupportedChain): string {
-  const envKey = chain === "ethereum" ? "ETHEREUM_RPC_URL" : "BASE_RPC_URL";
-  const url = process.env[envKey];
+  const { rpcEnvKey } = getChainConfig(chain);
+  const url = process.env[rpcEnvKey];
 
   if (!url) {
     throw new Error(
-      `${envKey} is not configured. Add it to your environment variables.`,
+      `${rpcEnvKey} is not configured. Add it to your environment variables.`,
     );
   }
 

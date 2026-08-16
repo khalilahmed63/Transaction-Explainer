@@ -123,7 +123,7 @@ async function loadExplanation(
         ok: false,
         kind: "unconfigured",
         message:
-          "Blockchain RPC is not configured. Set ETHEREUM_RPC_URL and BASE_RPC_URL to enable explanations.",
+          "Blockchain RPC is not configured. Set the network RPC URL environment variables to enable explanations.",
       };
     }
     if (error instanceof RpcRequestError) {
@@ -151,7 +151,7 @@ export default async function TransactionPage({ params }: PageProps) {
       <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
         <TransactionError
           title="Unsupported network"
-          message="Please choose Ethereum or Base."
+          message="Please choose a supported network: Ethereum, Base, Arbitrum, Polygon, BNB Chain, Optimism, or Avalanche."
         />
       </div>
     );

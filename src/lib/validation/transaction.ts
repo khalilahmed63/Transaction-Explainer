@@ -32,12 +32,56 @@ export function extractTxHash(input: string): string | null {
 }
 
 /**
- * Infer network from pasted explorer links (e.g. basescan.org / etherscan.io).
+ * Infer network from pasted explorer links.
  * Returns null when there is no clear hint — the user's selected chain stays.
  */
 export function detectChainHintFromInput(input: string): SupportedChain | null {
   const lower = input.trim().toLowerCase();
   if (!lower) return null;
+
+  if (
+    lower.includes("arbiscan") ||
+    lower.includes("/arbitrum/") ||
+    lower.includes("chain=arbitrum")
+  ) {
+    return "arbitrum";
+  }
+
+  if (
+    lower.includes("polygonscan") ||
+    lower.includes("/polygon/") ||
+    lower.includes("chain=polygon")
+  ) {
+    return "polygon";
+  }
+
+  if (
+    lower.includes("bscscan") ||
+    lower.includes("/bsc/") ||
+    lower.includes("chain=bsc") ||
+    lower.includes("bnbchain")
+  ) {
+    return "bsc";
+  }
+
+  if (
+    lower.includes("optimistic.etherscan") ||
+    lower.includes("opscan") ||
+    lower.includes("/optimism/") ||
+    lower.includes("chain=optimism")
+  ) {
+    return "optimism";
+  }
+
+  if (
+    lower.includes("snowtrace") ||
+    lower.includes("snowscan") ||
+    lower.includes("/avalanche/") ||
+    lower.includes("chain=avalanche") ||
+    lower.includes("avax.network")
+  ) {
+    return "avalanche";
+  }
 
   if (
     lower.includes("basescan") ||
@@ -50,7 +94,6 @@ export function detectChainHintFromInput(input: string): SupportedChain | null {
 
   if (
     lower.includes("etherscan") ||
-    lower.includes("ethereum.org") ||
     lower.includes("/ethereum/") ||
     lower.includes("chain=ethereum") ||
     lower.includes("chain=eth")

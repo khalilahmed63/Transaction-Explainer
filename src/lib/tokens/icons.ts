@@ -1,14 +1,25 @@
 import { getAddress } from "viem";
 import type { SupportedChain } from "@/types/transaction";
+import { CHAIN_CONFIG } from "@/lib/blockchain/chains";
 
 const TRUST_WALLET_CHAIN: Record<SupportedChain, string> = {
-  ethereum: "ethereum",
-  base: "base",
+  ethereum: CHAIN_CONFIG.ethereum.trustWalletSlug,
+  base: CHAIN_CONFIG.base.trustWalletSlug,
+  arbitrum: CHAIN_CONFIG.arbitrum.trustWalletSlug,
+  polygon: CHAIN_CONFIG.polygon.trustWalletSlug,
+  bsc: CHAIN_CONFIG.bsc.trustWalletSlug,
+  optimism: CHAIN_CONFIG.optimism.trustWalletSlug,
+  avalanche: CHAIN_CONFIG.avalanche.trustWalletSlug,
 };
 
 const GECKO_NETWORK: Record<SupportedChain, string> = {
-  ethereum: "eth",
-  base: "base",
+  ethereum: CHAIN_CONFIG.ethereum.geckoNetwork,
+  base: CHAIN_CONFIG.base.geckoNetwork,
+  arbitrum: CHAIN_CONFIG.arbitrum.geckoNetwork,
+  polygon: CHAIN_CONFIG.polygon.geckoNetwork,
+  bsc: CHAIN_CONFIG.bsc.geckoNetwork,
+  optimism: CHAIN_CONFIG.optimism.geckoNetwork,
+  avalanche: CHAIN_CONFIG.avalanche.geckoNetwork,
 };
 
 /**
@@ -27,6 +38,10 @@ const KNOWN_ICONS_BY_ADDRESS: Record<string, string> = {
     "https://coin-images.coingecko.com/coins/images/9956/small/Badge_Dai.png",
   "ethereum:0x467bccd9d29f223bce8043b84e8c8b282827790f":
     "https://coin-images.coingecko.com/coins/images/1899/small/tel.png",
+  "ethereum:0x455e53cbb86018ac2b8092fdcd39d8444affc3f6":
+    "https://coin-images.coingecko.com/coins/images/32440/small/polygon.png",
+  "ethereum:0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0":
+    "https://coin-images.coingecko.com/coins/images/4713/small/polygon.png",
 
   // Base
   "base:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913":
@@ -37,10 +52,6 @@ const KNOWN_ICONS_BY_ADDRESS: Record<string, string> = {
     "https://coin-images.coingecko.com/coins/images/1899/small/tel.png",
   "base:0x06b6a69a77ba5baeb264029544006ab8df9ead85":
     "https://coin-images.coingecko.com/coins/images/32440/small/polygon.png",
-  "ethereum:0x455e53cbb86018ac2b8092fdcd39d8444affc3f6":
-    "https://coin-images.coingecko.com/coins/images/32440/small/polygon.png",
-  "ethereum:0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0":
-    "https://coin-images.coingecko.com/coins/images/4713/small/polygon.png",
 };
 
 const KNOWN_ICONS_BY_SYMBOL: Record<string, string> = {
@@ -54,6 +65,10 @@ const KNOWN_ICONS_BY_SYMBOL: Record<string, string> = {
   CBETH: "https://coin-images.coingecko.com/coins/images/27008/small/cbeth.png",
   POL: "https://coin-images.coingecko.com/coins/images/32440/small/polygon.png",
   MATIC: "https://coin-images.coingecko.com/coins/images/4713/small/polygon.png",
+  BNB: "https://coin-images.coingecko.com/coins/images/825/small/bnb-icon2_2x.png",
+  AVAX: "https://coin-images.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png",
+  WBNB: "https://coin-images.coingecko.com/coins/images/12591/small/binance-coin-logo.png",
+  WAVAX: "https://coin-images.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png",
 };
 
 function checksum(address: string): string | null {
@@ -107,8 +122,8 @@ export function getTokenIconCandidates(
   add(getKnownIconUrl(chain, tokenAddress, symbol));
   if (tokenAddress) {
     add(getTrustWalletIconUrl(chain, tokenAddress));
-    // Many Base bridged tokens still live under the Ethereum Trust Wallet pack
-    if (chain === "base") {
+    // Many L2 bridged tokens still live under the Ethereum Trust Wallet pack
+    if (chain === "base" || chain === "arbitrum" || chain === "optimism") {
       add(getTrustWalletIconUrl("ethereum", tokenAddress));
     }
   }

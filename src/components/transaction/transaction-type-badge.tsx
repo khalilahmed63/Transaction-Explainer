@@ -14,7 +14,7 @@ const TYPE_CONFIG: Record<
   { label: string; icon: typeof Send; className: string }
 > = {
   native_transfer: {
-    label: "ETH Transfer",
+    label: "Native Transfer",
     icon: Send,
     className: "bg-[#627EEA]/10 text-[#4c63c7] dark:text-[#9db0ff]",
   },

@@ -22,7 +22,7 @@ export function GasFeeCard({
     >
       <div className="flex items-center gap-3">
         <span className="relative">
-          <TokenIcon symbol="ETH" chain={chain} isNative size="md" />
+          <TokenIcon symbol={symbol} chain={chain} isNative size="md" />
           <span className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-surface ring-1 ring-border text-muted">
             <Fuel className="size-2.5" aria-hidden />
           </span>

@@ -44,14 +44,15 @@ export default function HomePage() {
           <ChainIcon chain="base" size="md" />
         </div>
         <p className="mb-3 text-sm font-medium text-accent">
-          Free · No wallet required · Ethereum & Base
+          Free · No wallet required · 7 EVM networks
         </p>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl sm:leading-tight">
           Understand any crypto transaction.
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-          Paste an Ethereum or Base transaction hash and see what actually
-          happened in plain English.
+          Paste a transaction hash from Ethereum, Base, Arbitrum, Polygon, BNB
+          Chain, Optimism, or Avalanche and see what actually happened in plain
+          English.
         </p>
       </section>
 
@@ -120,7 +121,7 @@ export default function HomePage() {
             {
               step: "1",
               title: "Paste a transaction hash",
-              body: "Choose Ethereum or Base, then enter a completed transaction hash starting with 0x.",
+              body: "Choose a supported network, then enter a completed transaction hash starting with 0x.",
             },
             {
               step: "2",
