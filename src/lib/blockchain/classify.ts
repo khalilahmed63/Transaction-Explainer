@@ -61,11 +61,11 @@ export function classifyTransaction(
     if (looksLikeClaim) {
       return { type: "token_claim", confidence: "high" };
     }
-    if (input.hasInputData) {
-      // User triggered a contract and only received tokens — likely claim/airdrop pull
-      return { type: "token_claim", confidence: "medium" };
-    }
-    return { type: "token_transfer", confidence: "medium" };
+    // Incoming ERC-20 with calldata is often a pull/helper transfer, not a claim.
+    return {
+      type: "token_transfer",
+      confidence: input.hasInputData ? "medium" : "high",
+    };
   }
 
   // Native ETH transfer to an EOA-like simple transfer (value > 0, no token movement)

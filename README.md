@@ -56,6 +56,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `OPTIMISM_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for OP Mainnet |
 | `AVALANCHE_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Avalanche C-Chain |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL (defaults to `https://tx.tomnitive.com`) |
+| `ENABLE_INTERNAL_QA` | No | Set to `true` to enable `/internal/qa` (404 otherwise). Prefer Preview only. |
 | `NEXT_PUBLIC_EXAMPLE_ETHEREUM_TX` | No | Override Ethereum “Try an example” hash |
 | `NEXT_PUBLIC_EXAMPLE_BASE_TX` | No | Override Base “Try an example” hash |
 

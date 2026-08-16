@@ -24,7 +24,12 @@ import type { TransactionErrorType } from "@/lib/analytics";
 
 type PageProps = {
   params: Promise<{ chain: string; hash: string }>;
+  searchParams: Promise<{ qa?: string }>;
 };
+
+function isQaTraffic(searchParams: { qa?: string }): boolean {
+  return searchParams.qa === "1" || searchParams.qa === "true";
+}
 
 type LoadResult =
   | { ok: true; data: TransactionExplanation }
@@ -143,8 +148,12 @@ async function loadExplanation(
   }
 }
 
-export default async function TransactionPage({ params }: PageProps) {
+export default async function TransactionPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { chain: chainParam, hash: hashParam } = await params;
+  const qaMode = isQaTraffic(await searchParams);
 
   if (!isSupportedChain(chainParam)) {
     return (
@@ -162,12 +171,14 @@ export default async function TransactionPage({ params }: PageProps) {
   if (!isValidTxHash(hashParam)) {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
-        <TransactionAnalytics
-          chain={chain}
-          outcome="error"
-          errorType="invalid_transaction"
-          submitted={false}
-        />
+        {!qaMode ? (
+          <TransactionAnalytics
+            chain={chain}
+            outcome="error"
+            errorType="invalid_transaction"
+            submitted={false}
+          />
+        ) : null}
         <TransactionSearch defaultChain={chain} clearHref="/" />
         <TransactionError
           title="Invalid transaction hash"
@@ -189,11 +200,13 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.ok) {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
-        <TransactionAnalytics
-          chain={chain}
-          outcome="success"
-          transactionType={result.data.transactionType}
-        />
+        {!qaMode ? (
+          <TransactionAnalytics
+            chain={chain}
+            outcome="success"
+            transactionType={result.data.transactionType}
+          />
+        ) : null}
         <TransactionSearch
           defaultChain={chain}
           defaultHash={result.data.hash}
@@ -210,16 +223,18 @@ export default async function TransactionPage({ params }: PageProps) {
     // Common case: pasted a Base hash while Ethereum is selected (or vice versa).
     const alternate = await findAlternateChain(chain, hash);
     if (alternate) {
-      redirect(`/tx/${alternate}/${hash}`);
+      redirect(`/tx/${alternate}/${hash}${qaMode ? "?qa=1" : ""}`);
     }
 
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
-        <TransactionAnalytics
-          chain={chain}
-          outcome="error"
-          errorType={errorTypeFromKind(result.kind)}
-        />
+        {!qaMode ? (
+          <TransactionAnalytics
+            chain={chain}
+            outcome="error"
+            errorType={errorTypeFromKind(result.kind)}
+          />
+        ) : null}
         <TransactionSearch
           defaultChain={chain}
           defaultHash={hash}
@@ -238,11 +253,13 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.kind === "unconfigured") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
-        <TransactionAnalytics
-          chain={chain}
-          outcome="error"
-          errorType={errorTypeFromKind(result.kind)}
-        />
+        {!qaMode ? (
+          <TransactionAnalytics
+            chain={chain}
+            outcome="error"
+            errorType={errorTypeFromKind(result.kind)}
+          />
+        ) : null}
         <TransactionError
           title="Service unavailable"
           message={result.message}
@@ -255,11 +272,13 @@ export default async function TransactionPage({ params }: PageProps) {
   if (result.kind === "rpc") {
     return (
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
-        <TransactionAnalytics
-          chain={chain}
-          outcome="error"
-          errorType={errorTypeFromKind(result.kind)}
-        />
+        {!qaMode ? (
+          <TransactionAnalytics
+            chain={chain}
+            outcome="error"
+            errorType={errorTypeFromKind(result.kind)}
+          />
+        ) : null}
         <TransactionSearch
           defaultChain={chain}
           defaultHash={hash}
@@ -281,11 +300,13 @@ export default async function TransactionPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-10 px-4 py-12 sm:px-6">
-      <TransactionAnalytics
-        chain={chain}
-        outcome="error"
-        errorType={errorTypeFromKind(result.kind)}
-      />
+      {!qaMode ? (
+        <TransactionAnalytics
+          chain={chain}
+          outcome="error"
+          errorType={errorTypeFromKind(result.kind)}
+        />
+      ) : null}
       <TransactionSearch defaultChain={chain} clearHref="/" />
       <TransactionError
         title="Something went wrong"

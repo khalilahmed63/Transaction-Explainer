@@ -32,8 +32,10 @@ export class RpcRequestError extends Error {
   }
 }
 
-/** Dedupes page + generateMetadata fetches within a single request. */
-export const explainTransaction = cache(async function explainTransaction(
+/**
+ * Core transaction analyzer used by production pages and internal QA.
+ */
+export async function analyzeTransaction(
   chain: SupportedChain,
   hash: Hash,
 ): Promise<TransactionExplanation> {
@@ -217,4 +219,7 @@ export const explainTransaction = cache(async function explainTransaction(
   const summary = buildTransactionSummary(base);
 
   return { ...base, summary };
-});
+}
+
+/** Dedupes page + generateMetadata fetches within a single request. */
+export const explainTransaction = cache(analyzeTransaction);

@@ -124,6 +124,42 @@ describe("classifyTransaction", () => {
     expect(result.type).toBe("token_swap");
   });
 
+  it("classifies incoming ERC-20 with calldata as transfer, not claim", () => {
+    const result = classifyTransaction({
+      status: "success",
+      nativeValueWei: 0n,
+      to: "0x8a184719997f77ac315e08dcede74e3a9c19bd09",
+      tokenTransfers: [
+        {
+          tokenAddress: "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+          symbol: "USDC",
+          amount: "10",
+          rawAmount: "10000000",
+          decimals: 6,
+          from: "0x8a184719997f77ac315e08dcede74e3a9c19bd09",
+          to: wallet,
+          logIndex: 0,
+        },
+      ],
+      approvals: [],
+      walletImpact: {
+        sent: [],
+        received: [
+          {
+            symbol: "USDC",
+            amount: "10",
+            rawAmount: "10000000",
+            decimals: 6,
+            tokenAddress: "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+          },
+        ],
+      },
+      hasInputData: true,
+      input: "0x0ecbcdab000000000000000000000000000000000000000000000000000000000000000a",
+    });
+    expect(result.type).toBe("token_transfer");
+  });
+
   it("classifies token claims", () => {
     const result = classifyTransaction({
       status: "success",
