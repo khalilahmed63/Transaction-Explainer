@@ -2,7 +2,9 @@
 
 **Version 0.1**
 
-Paste an Ethereum, Base, Arbitrum, Polygon, BNB Chain, Optimism, or Avalanche transaction hash and get a clear, human-readable explanation of what happened — token transfers, swaps, approvals, wallet impact, and gas fees.
+Paste a transaction hash and get a clear, human-readable explanation of what happened — token transfers, swaps, approvals, wallet impact, and gas fees.
+
+Supports major EVM networks including Ethereum, Base, Arbitrum, Polygon, BNB Chain, Optimism, and Avalanche.
 
 **Live demo:** [https://tx.tomnitive.com/](https://tx.tomnitive.com/)
 
@@ -30,7 +32,7 @@ This is **not** a wallet, portfolio tracker, blockchain explorer, security scann
 - ERC-20 approval detection
 - Gas fee calculation
 - Collapsible technical details
-- Shareable result URLs (`/tx/ethereum/[hash]`, `/tx/base/[hash]`)
+- Shareable result URLs for every supported network (`/tx/[network]/[transactionHash]`)
 - Light and dark mode
 
 ## Analytics
@@ -42,7 +44,7 @@ The app uses [Vercel Web Analytics](https://vercel.com/docs/analytics) (page vie
 ```bash
 npm install
 cp .env.example .env.local
-# Fill in ETHEREUM_RPC_URL and BASE_RPC_URL
+# Configure the RPC URLs for the networks you want to support.
 npm run dev
 ```
 
@@ -65,6 +67,18 @@ Open [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_EXAMPLE_BASE_TX` | No | Override Base example gallery hash |
 
 RPC URLs are used **only on the server**. Do not commit real credentials.
+
+Example `.env.local` keys (values omitted):
+
+```env
+ETHEREUM_RPC_URL=
+BASE_RPC_URL=
+ARBITRUM_RPC_URL=
+POLYGON_RPC_URL=
+BSC_RPC_URL=
+OPTIMISM_RPC_URL=
+AVALANCHE_RPC_URL=
+```
 
 Prefer a reliable Base RPC such as `https://mainnet.base.org` for local development.
 Some public endpoints reject receipt requests, which prevents token transfer parsing.
@@ -95,7 +109,7 @@ The UI consumes a normalized `TransactionExplanation` model.
 
 1. Push the repo to GitHub
 2. Import the project in Vercel
-3. Set the network RPC URL environment variables (`ETHEREUM_RPC_URL`, `BASE_RPC_URL`, etc.)
+3. Configure the RPC URLs for the networks you want to support
 4. Deploy
 
 ## Contributing

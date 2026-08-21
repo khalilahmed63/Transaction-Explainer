@@ -9,6 +9,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
+        // Dynamic tx result URLs are shareable but intentionally noindex
+        // (infinite URL space / thin duplicate content). Keep them out of crawls.
         disallow: ["/api/", "/tx/", "/internal/"],
       },
     ],

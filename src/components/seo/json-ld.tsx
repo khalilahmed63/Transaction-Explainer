@@ -5,77 +5,95 @@ import {
   APP_FAQ,
   APP_NAME,
   APP_TAGLINE,
+  GITHUB_URL,
   getSiteUrl,
 } from "@/config/app";
 
-export function JsonLd() {
+function JsonLdScript({ data }: { data: Record<string, unknown> }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
+/** Sitewide entities — safe on every indexed page. */
+export function SiteJsonLd() {
   const siteUrl = getSiteUrl();
-
-  const website = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: APP_NAME,
-    url: siteUrl,
-    description: APP_DESCRIPTION,
-    inLanguage: "en-US",
-  };
-
-  const software = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: APP_NAME,
-    applicationCategory: "FinanceApplication",
-    operatingSystem: "Web",
-    url: siteUrl,
-    description: APP_DESCRIPTION,
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
-    featureList: APP_CAPABILITIES.map((feature) => feature.title),
-    browserRequirements: "Requires a modern web browser with JavaScript enabled",
-  };
-
-  const organization = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: APP_CONFIG.creator.name,
-    url: APP_CONFIG.creator.url,
-    description: APP_TAGLINE,
-  };
-
-  const faq = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: APP_FAQ.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
+  const logoUrl = `${siteUrl}/icon-512`;
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
-      />
-    </>
+    <JsonLdScript
+      data={{
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": `${siteUrl}/#website`,
+            name: APP_NAME,
+            url: siteUrl,
+            description: APP_DESCRIPTION,
+            inLanguage: "en-US",
+            publisher: { "@id": `${siteUrl}/#organization` },
+          },
+          {
+            "@type": "Organization",
+            "@id": `${siteUrl}/#organization`,
+            name: APP_CONFIG.creator.name,
+            url: APP_CONFIG.creator.url,
+            description: APP_TAGLINE,
+            logo: {
+              "@type": "ImageObject",
+              url: logoUrl,
+            },
+            sameAs: [APP_CONFIG.creator.url],
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": `${siteUrl}/#app`,
+            name: APP_NAME,
+            applicationCategory: "FinanceApplication",
+            operatingSystem: "Web",
+            url: siteUrl,
+            description: APP_DESCRIPTION,
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+            featureList: APP_CAPABILITIES.map((feature) => feature.title),
+            browserRequirements:
+              "Requires a modern web browser with JavaScript enabled",
+            publisher: { "@id": `${siteUrl}/#organization` },
+            sameAs: [GITHUB_URL],
+          },
+        ],
+      }}
+    />
+  );
+}
+
+/** Homepage-only FAQ rich results — must match visible FAQ content. */
+export function FaqJsonLd() {
+  const siteUrl = getSiteUrl();
+
+  return (
+    <JsonLdScript
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": `${siteUrl}/#faq`,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        mainEntity: APP_FAQ.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      }}
+    />
   );
 }

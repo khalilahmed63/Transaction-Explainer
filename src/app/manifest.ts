@@ -11,6 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#f7f8fa",
     theme_color: "#9362f4",
     lang: "en",
+    categories: ["finance", "utilities"],
     icons: [
       {
         src: "/favicon.svg",
@@ -23,6 +24,24 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
         sizes: "32x32",
         purpose: "any",
+      },
+      {
+        src: "/icon-192",
+        type: "image/png",
+        sizes: "192x192",
+        purpose: "any",
+      },
+      {
+        src: "/icon-512",
+        type: "image/png",
+        sizes: "512x512",
+        purpose: "any",
+      },
+      {
+        src: "/icon-512",
+        type: "image/png",
+        sizes: "512x512",
+        purpose: "maskable",
       },
       {
         src: "/apple-icon",

@@ -11,6 +11,7 @@ import {
 import { TransactionSearch } from "@/components/transaction/transaction-search";
 import { ExampleGallery } from "@/components/transaction/example-gallery";
 import { ChainIcon } from "@/components/ui/chain-icon";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import {
   APP_ABOUT,
   APP_CAPABILITIES,
@@ -22,11 +23,26 @@ import {
   SUPPORTED_CHAINS,
 } from "@/config/app";
 
+const pageTitle = `${APP_NAME} — Understand Crypto Transactions in Plain English`;
+
 export const metadata: Metadata = {
-  title: `${APP_NAME} — Understand Crypto Transactions in Plain English`,
+  title: {
+    absolute: pageTitle,
+  },
   description: APP_DESCRIPTION,
   alternates: {
     canonical: "/",
+  },
+  openGraph: {
+    title: pageTitle,
+    description: APP_DESCRIPTION,
+    url: "/",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${APP_NAME} — Understand Crypto Transactions`,
+    description: APP_DESCRIPTION,
   },
 };
 
@@ -41,6 +57,7 @@ const CAPABILITY_ICONS = {
 export default function HomePage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 pb-24 pt-14 sm:px-6 sm:pt-20">
+      <FaqJsonLd />
       <section className="animate-rise text-center">
         <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
           {SUPPORTED_CHAINS.map((chain) => (
@@ -54,9 +71,8 @@ export default function HomePage() {
           Understand any crypto transaction.
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-          Paste a transaction hash from Ethereum, Base, Arbitrum, Polygon, BNB
-          Chain, Optimism, or Avalanche and see what actually happened in plain
-          English.
+          Supports major EVM networks including Ethereum, Base, Arbitrum,
+          Polygon, BNB Chain, Optimism, and Avalanche.
         </p>
       </section>
 

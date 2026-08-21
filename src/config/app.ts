@@ -16,7 +16,7 @@ export const APP_VERSION = "0.1";
 export const APP_TAGLINE = "Blockchain transactions, explained simply.";
 
 export const APP_DESCRIPTION =
-  "Paste a transaction hash from Ethereum, Base, Arbitrum, Polygon, BNB Chain, Optimism, or Avalanche and understand what happened in plain English — including token transfers, swaps, approvals, wallet impact, and gas fees.";
+  "Understand transactions across major EVM networks in plain English, including transfers, swaps, approvals, gas fees, and wallet impact.";
 
 export const APP_ABOUT =
   "Transaction Explainer translates EVM transaction activity into simple, readable explanations. It helps users understand token transfers, swaps, approvals, gas fees, and wallet impact without navigating raw blockchain data.";

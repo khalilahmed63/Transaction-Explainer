@@ -5,7 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { JsonLd } from "@/components/seo/json-ld";
+import { SiteJsonLd } from "@/components/seo/json-ld";
 import {
   APP_CONFIG,
   APP_DESCRIPTION,
@@ -26,6 +26,7 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl = getSiteUrl();
+const defaultTitle = `${APP_NAME} — Understand Crypto Transactions in Plain English`;
 
 export const viewport: Viewport = {
   themeColor: [
@@ -37,9 +38,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(APP_CONFIG.url),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: `${APP_NAME} — Understand Crypto Transactions in Plain English`,
+    default: defaultTitle,
     template: `%s | ${APP_NAME}`,
   },
   description: APP_DESCRIPTION,
@@ -49,12 +50,16 @@ export const metadata: Metadata = {
   publisher: APP_NAME,
   category: "finance",
   keywords: [...APP_KEYWORDS],
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteUrl,
     siteName: APP_NAME,
-    title: `${APP_NAME} — Understand Crypto Transactions in Plain English`,
+    title: defaultTitle,
     description: APP_DESCRIPTION,
   },
   twitter: {
@@ -66,6 +71,8 @@ export const metadata: Metadata = {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/icon", type: "image/png", sizes: "32x32" },
+      { url: "/icon-192", type: "image/png", sizes: "192x192" },
+      { url: "/icon-512", type: "image/png", sizes: "512x512" },
     ],
     apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
   },
@@ -81,9 +88,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  alternates: {
-    canonical: "/",
-  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -98,7 +102,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         suppressHydrationWarning
       >
         <ThemeProvider>
-          <JsonLd />
+          <SiteJsonLd />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

@@ -88,6 +88,11 @@ export async function generateMetadata({
     robots: {
       index: false,
       follow: true,
+      googleBot: {
+        index: false,
+        follow: true,
+        noimageindex: true,
+      },
     },
     alternates: canonicalPath
       ? {
