@@ -2,7 +2,7 @@
 
 **Version 0.1**
 
-Paste an Ethereum or Base transaction hash and get a clear, human-readable explanation of what happened — token transfers, swaps, approvals, wallet impact, and gas fees.
+Paste an Ethereum, Base, Arbitrum, Polygon, BNB Chain, Optimism, or Avalanche transaction hash and get a clear, human-readable explanation of what happened — token transfers, swaps, approvals, wallet impact, and gas fees.
 
 **Live demo:** [https://tx.tomnitive.com/](https://tx.tomnitive.com/)
 
@@ -61,8 +61,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | `AVALANCHE_RPC_URL` | Yes | JSON-RPC HTTPS endpoint for Avalanche C-Chain |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL (defaults to `https://tx.tomnitive.com`) |
 | `ENABLE_INTERNAL_QA` | No | Set to `true` to enable `/internal/qa` (404 otherwise). Prefer Preview only. |
-| `NEXT_PUBLIC_EXAMPLE_ETHEREUM_TX` | No | Override Ethereum “Try an example” hash |
-| `NEXT_PUBLIC_EXAMPLE_BASE_TX` | No | Override Base “Try an example” hash |
+| `NEXT_PUBLIC_EXAMPLE_ETHEREUM_TX` | No | Override Ethereum example gallery hash |
+| `NEXT_PUBLIC_EXAMPLE_BASE_TX` | No | Override Base example gallery hash |
 
 RPC URLs are used **only on the server**. Do not commit real credentials.
 
@@ -95,7 +95,7 @@ The UI consumes a normalized `TransactionExplanation` model.
 
 1. Push the repo to GitHub
 2. Import the project in Vercel
-3. Set `ETHEREUM_RPC_URL` and `BASE_RPC_URL` in project environment variables
+3. Set the network RPC URL environment variables (`ETHEREUM_RPC_URL`, `BASE_RPC_URL`, etc.)
 4. Deploy
 
 ## Contributing

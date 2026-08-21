@@ -221,20 +221,24 @@ export async function getTokenMetadata(
   const known =
     KNOWN_TOKEN_META[`${chainId}:${tokenAddress.toLowerCase()}`] ?? null;
 
-  const [symbolResult, nameResult, decimalsResult] = await Promise.all([
-    readSymbol(client, tokenAddress),
-    readName(client, tokenAddress),
-    readDecimals(client, tokenAddress),
-  ]);
+  // Prefer curated metadata first — public RPCs often stall on eth_call, and
+  // waiting on timeouts (20s × retries) makes example pages look "stuck loading".
+  let symbol: string | null = known?.symbol ?? null;
+  let name: string | null = known?.name ?? null;
+  let decimals: number | null = known?.decimals ?? null;
 
-  let symbol = symbolResult;
-  let name = nameResult;
-  let decimals = decimalsResult;
+  if (!symbol || !name || decimals == null) {
+    const [symbolResult, nameResult, decimalsResult] = await Promise.all([
+      symbol ? Promise.resolve(null) : readSymbol(client, tokenAddress),
+      name ? Promise.resolve(null) : readName(client, tokenAddress),
+      decimals != null
+        ? Promise.resolve(null)
+        : readDecimals(client, tokenAddress),
+    ]);
 
-  if ((!symbol || !name || decimals == null) && known) {
-    symbol = symbol ?? known.symbol;
-    name = name ?? known.name;
-    decimals = decimals ?? known.decimals;
+    symbol = symbol ?? symbolResult;
+    name = name ?? nameResult;
+    decimals = decimals ?? decimalsResult;
   }
 
   if (!symbol || decimals == null) {

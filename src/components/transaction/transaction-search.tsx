@@ -16,7 +16,6 @@ import {
   extractTxHash,
   getHashValidationError,
 } from "@/lib/validation/transaction";
-import { getExampleTransaction } from "@/config/app";
 import {
   setTransactionSource,
   trackEvent,
@@ -49,13 +48,10 @@ export function TransactionSearch({
   const canSubmit = Boolean(extractTxHash(hash)) && !isPending;
   const canClearResults = Boolean(clearHref) && !isPending;
   const showFieldClear = !clearHref && hash.length > 0 && !isPending;
-  const example = getExampleTransaction(chain);
-  const showExampleCta = Boolean(example) && !clearHref && !isPending;
 
   function submit(
     rawHash: string = hash,
     nextChain: SupportedChain = chain,
-    source: "manual" | "example" = "manual",
   ) {
     const normalized = extractTxHash(rawHash);
     if (!normalized) {
@@ -74,7 +70,7 @@ export function TransactionSearch({
     setHash(normalized);
     setChain(nextChain);
     setError(null);
-    setTransactionSource(source);
+    setTransactionSource("manual");
     startTransition(() => {
       router.push(destination);
     });
@@ -93,7 +89,7 @@ export function TransactionSearch({
       trackEvent("network_selected", { chain: hinted });
     }
     setError(null);
-    submit(extracted, nextChain, "manual");
+    submit(extracted, nextChain);
   }
 
   function onSubmit(e: FormEvent) {
@@ -146,14 +142,8 @@ export function TransactionSearch({
     trackEvent("network_selected", { chain: nextChain });
     const normalized = extractTxHash(hash);
     if (normalized) {
-      submit(normalized, nextChain, "manual");
+      submit(normalized, nextChain);
     }
-  }
-
-  function onTryExample() {
-    if (!example) return;
-    trackEvent("example_transaction_clicked", { chain });
-    submit(example.hash, chain, "example");
   }
 
   return (
@@ -268,25 +258,10 @@ export function TransactionSearch({
           </button>
         </div>
 
-        {showExampleCta && (
-          <div className="mt-3 flex justify-center px-1">
-            <button
-              type="button"
-              onClick={onTryExample}
-              aria-label={`Try an example ${chain} transaction`}
-              className="text-sm text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:rounded-md"
-            >
-              Don&apos;t have a transaction? Try an example →
-            </button>
-          </div>
-        )}
-
-        {!showExampleCta && (
-          <p className="mt-2 px-1 text-xs text-muted">
-            Paste a valid hash to explain automatically. Changing the network
-            reloads the same hash on that chain.
-          </p>
-        )}
+        <p className="mt-2 px-1 text-xs text-muted">
+          Paste a valid hash to explain automatically. Changing the network
+          reloads the same hash on that chain.
+        </p>
 
         {(error || (hash && validationError)) && (
           <p

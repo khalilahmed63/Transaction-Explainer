@@ -9,6 +9,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { TransactionSearch } from "@/components/transaction/transaction-search";
+import { ExampleGallery } from "@/components/transaction/example-gallery";
 import { ChainIcon } from "@/components/ui/chain-icon";
 import {
   APP_ABOUT,
@@ -17,6 +18,7 @@ import {
   APP_FAQ,
   APP_NAME,
   DISCLAIMER,
+  EXAMPLE_GALLERY,
   SUPPORTED_CHAINS,
 } from "@/config/app";
 
@@ -64,6 +66,29 @@ export default function HomePage() {
         aria-label="Explain a transaction"
       >
         <TransactionSearch />
+      </section>
+
+      <section
+        id="try-an-example"
+        className="animate-rise mt-14 scroll-mt-20"
+        style={{ animationDelay: "100ms" }}
+        aria-labelledby="examples-heading"
+      >
+        <div className="text-center">
+          <h2
+            id="examples-heading"
+            className="text-lg font-semibold tracking-tight text-foreground sm:text-xl"
+          >
+            Don&apos;t have a transaction? See a few examples
+          </h2>
+          <p className="mt-2 text-sm text-muted">
+            Real, already-completed transactions — click one to see the
+            explanation.
+          </p>
+        </div>
+        <div className="mt-8">
+          <ExampleGallery items={EXAMPLE_GALLERY} />
+        </div>
       </section>
 
       <section

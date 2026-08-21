@@ -1,4 +1,4 @@
-import type { SupportedChain } from "@/types/transaction";
+import type { SupportedChain, TransactionType } from "@/types/transaction";
 import { CHAIN_ORDER } from "@/lib/blockchain/chains";
 
 export const APP_CONFIG = {
@@ -110,8 +110,8 @@ export type ExampleTransaction = {
 };
 
 /**
- * Central example hashes for the homepage "Try an example" action.
- * Override via env without code changes. Empty hash = CTA hidden for that chain.
+ * Central example hashes for the homepage example gallery (and env overrides).
+ * Override via env without code changes. Empty hash = that chain's example is skipped.
  */
 export const EXAMPLE_TRANSACTIONS: Partial<
   Record<SupportedChain, ExampleTransaction>
@@ -167,6 +167,53 @@ export function getExampleTransaction(
   if (!example?.hash?.trim()) return null;
   return example;
 }
+
+export type ExampleGalleryItem = {
+  chain: SupportedChain;
+  hash: string;
+  label: string;
+  type: TransactionType;
+};
+
+/**
+ * A small, diverse set of real transactions for the homepage "try an
+ * example" gallery — lets a visitor with no hash of their own see a few
+ * different explanation types at a glance. Distinct from
+ * EXAMPLE_TRANSACTIONS (per-chain default hashes, overridable via env).
+ *
+ * The two entries below are guaranteed to work today — they reuse hashes
+ * already verified in EXAMPLE_TRANSACTIONS. To show the full range of what
+ * the app explains, add a real swap and a real claim/NFT transaction: grab
+ * one from Etherscan/Basescan, paste it into your own app first to confirm
+ * it explains the way you expect, then add it here.
+ */
+export const EXAMPLE_GALLERY: ExampleGalleryItem[] = [
+  {
+    chain: "ethereum",
+    hash: EXAMPLE_TRANSACTIONS.ethereum!.hash,
+    label: "Simple USDC transfer",
+    type: "token_transfer",
+  },
+  {
+    chain: "base",
+    hash: EXAMPLE_TRANSACTIONS.base!.hash,
+    label: "USDC transfer on Base",
+    type: "token_transfer",
+  },
+  // Uncomment once you've grabbed + verified a real hash for each:
+  // {
+  //   chain: "ethereum",
+  //   hash: "0x...",
+  //   label: "Token swap",
+  //   type: "token_swap",
+  // },
+  // {
+  //   chain: "ethereum",
+  //   hash: "0x...",
+  //   label: "NFT claim",
+  //   type: "token_claim",
+  // },
+];
 
 export const DISCLAIMER =
   "Transaction Explainer helps make blockchain activity easier to understand. It does not determine whether a transaction, token, contract, or protocol is safe.";
