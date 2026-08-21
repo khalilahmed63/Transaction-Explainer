@@ -4,6 +4,10 @@
 
 Paste an Ethereum or Base transaction hash and get a clear, human-readable explanation of what happened — token transfers, swaps, approvals, wallet impact, and gas fees.
 
+**Live demo:** [https://tx.tomnitive.com/](https://tx.tomnitive.com/)
+
+![Transaction Explainer homepage](docs/screenshot.png)
+
 This is **not** a wallet, portfolio tracker, blockchain explorer, security scanner, or trading terminal.
 
 > Transaction Explainer helps make blockchain activity easier to understand. It does **not** determine whether a transaction, token, contract, or protocol is safe.
@@ -31,7 +35,7 @@ This is **not** a wallet, portfolio tracker, blockchain explorer, security scann
 
 ## Analytics
 
-The app uses [Vercel Web Analytics](https://vercel.com/docs/analytics) (page views + custom events) and [Speed Insights](https://vercel.com/docs/speed-insights). Enable both in the Vercel project dashboard. Custom events are wrapped in `src/lib/analytics/` and never include transaction hashes or wallet addresses.
+The app uses [Vercel Web Analytics](https://vercel.com/docs/analytics) (page views + custom events) and [Speed Insights](https://vercel.com/docs/speed-insights). Enable both in the Vercel project dashboard. Custom events are wrapped in `src/lib/analytics/`.
 
 ## Local Development
 
@@ -93,6 +97,16 @@ The UI consumes a normalized `TransactionExplanation` model.
 2. Import the project in Vercel
 3. Set `ETHEREUM_RPC_URL` and `BASE_RPC_URL` in project environment variables
 4. Deploy
+
+## Contributing
+
+Contributions are welcome!
+
+Feel free to:
+
+- Open issues
+- Submit PRs
+- Suggest improvements
 
 ## Version
 

@@ -95,6 +95,11 @@ export const APP_FAQ = [
     answer:
       "Native transfers, token transfers, approvals, swaps, claims, contract interactions, gas fees, and wallet impact — based on what is visible on-chain.",
   },
+  {
+    question: "Do you collect transaction hashes or wallet addresses?",
+    answer:
+      "No. Explanations are generated on demand from public blockchain data. Analytics events never include transaction hashes or wallet addresses.",
+  },
 ] as const;
 
 export const SUPPORTED_CHAINS: SupportedChain[] = [...CHAIN_ORDER];
